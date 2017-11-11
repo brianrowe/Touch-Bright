@@ -1,0 +1,135 @@
+<html itemscope itemtype="http://schema.org/Article">
+
+<head>
+	<title>Touch-Bright</title>
+	<meta content="">
+	<meta name="viewport" content="initial-scale=1.0, user-scalable = no">
+	<meta name="description" content="An accessible remake of the fun classic Light-Bright comes, to life on your computer and mobile devices."/>
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="Touch-Bright">
+	<meta itemprop="name" content="Touch-Bright">
+	<meta itemprop="description" content="An accessible remake of the fun classic Light-Bright comes, to life on your computer and mobile devices.">
+	<meta itemprop="image" content="http://www.touch-bright.com/images/gimage.jpg">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Touch-Bright">
+	<meta name="twitter:site" content="@brianrowe" />
+	<meta name="twitter:description" content="An accessible remake of the fun classic Light-Bright, comes to life on your computer and mobile devices.">
+	<meta name="twitter:creator" content="@brianrowe">
+	<meta name="twitter:image:src" content="http://www.touch-bright.com/images/timage.jpg">
+	<meta property="og:title" content="Touch-Bright" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="http://www.touch-bright.com" />
+	<meta property="og:image" content="http://www.touch-bright.com/images/fbimage.jpg" />
+	<meta property="og:description" content="An accessible remake of the fun classic Light-Bright, comes to life on your computer and mobile devices."/>
+	<meta property="og:site_name" content="Touch-Bright" />
+	<link rel="apple-touch-icon" sizes="57x57" href="images/icons/apple-touch-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="images/icons/apple-touch-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/icons/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="images/icons/apple-touch-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/icons/apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="images/icons/apple-touch-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="images/icons/apple-touch-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="images/icons/apple-touch-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-touch-icon-180x180.png">
+	<link rel="icon" type="image/png" href="images/icons/favicon-32x32.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="images/icons/android-chrome-192x192.png" sizes="192x192">
+	<link rel="icon" type="image/png" href="/images/iconsfavicon-96x96.png" sizes="96x96">
+	<link rel="icon" type="image/png" href="images/icons/favicon-16x16.png" sizes="16x16">
+	<link rel="manifest" href="images/icons/manifest.json">
+	<link rel="mask-icon" href="images/icons/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="msapplication-TileImage" content="images/icons/mstile-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+	<link rel="stylesheet" type="text/css" href="css/core.css">
+	<link rel="stylesheet" type="text/css" href="css/touchbright.css">
+	<script type="text/javascript" src="js/lib.js"></script>
+	<script type="text/javascript" src="js/touchbright.js"></script>
+</head>
+
+<body>
+	<div id="fb-root"></div>
+
+
+	<script>
+		(function (i, s, o, g, r, a, m) {
+		i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+			(i[r].q = i[r].q || []).push(arguments)
+		}, i[r].l = 1 * new Date(); a = s.createElement(o),
+			m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+		ga('create', 'UA-70778531-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+
+
+	<nav id="SettingsMenu" class="menu js-menu active" role="navigation" aria-hidden="false" aria-labelledby="menu-button" style="display: block;">
+		<div class="settingsheader">Touch-Bright</div>
+		<ul>
+			<li id="grid">
+				<div class="menulabel">Show Grid</div>
+				<div class="switch medium">
+					<input class="switch-input" id="ShowGrid" type="checkbox" name="ShowGrid" onclick="TB.ToggleGrid()">
+					<label class="switch-paddle" for="ShowGrid">
+						<span class="show-for-sr">ShowGrid</span>
+						<span class="switch-inactive" aria-hidden="true">No</span>
+						<span class="switch-active" aria-hidden="true">Yes</span>
+					</label>
+				</div>
+			</li>
+			<li id="dotopt">
+				<a data-toggle="DotOptions"><i class="fa fa-dot-circle-o"></i> Grid Options</a>
+			</li>
+			<li id="invert">
+				<a onclick="TB.invert()" href="javascript:void(0);"><i class=""></i> Invert</a>
+			</li>
+			<li id="save">
+				<a onclick="TB.Save()"><i class="fa fa-floppy-o"></i> Save Picture</a>
+			</li>
+			<li id="open">
+				<a onclick="TB.ListSaved()"><i class="fa fa-folder-open"></i> Open Picture</a>
+			</li>
+			<li id="print">
+				<a onclick="TB.Print()"><i class="fa fa-print"></i> Print Picture</a>
+			</li>
+
+		</ul>
+	</nav>
+
+	<div id="menu">
+		<div class="left">
+			<button id="SettingsButton" class="menu-button" aria-label="Menu" aria-expanded="false" aria-controls="menu" tabindex="0" onclick="TB.openMenu()">
+				<i class="fa fa-cog" aria-hidden="true"></i>
+			</button>
+		</div>
+		<div class="right">
+			<button id="ClearBoard" tabindex="0" onclick="TB.ClearBoard()" onkeyup="if(event.keyCode == 13) TB.ClearBoard()" aria-label="Clear Board">
+				<i class="fa fa-times"></i>
+			</button>
+			<button id="PullPeg" tabindex="0" onclick="TB.ClearPeg()" onkeyup="if(event.keyCode == 13) TB.PullPeg()" aria-label="Clear Circle"></button>
+			<input type='text' class='color' value='red' />
+		</div>
+		<div class="logo"></div>
+	</div>
+
+	<div id="BoardArea" tabindex="-1"></div>
+	<div id="sidenav-overlay"></div>
+
+	<div class="medium reveal" id="DotOptions" data-reveal>
+		<h2>Grid Dot Options</h2>
+		<p>Dot Size</p>
+		<input id="DSize" type="range" min="10" max="30" step="5" value="0" />
+		<p>Dot Brightness</p>
+		<input id="DBright" type="range" min="0" max="1" step=".1" value="0" />
+		<button class="close-button" data-close aria-label="Close reveal" type="button">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+	<script>
+		$(document).foundation();
+		TB.Init();
+	</script>
+</body>
+
+</html>
