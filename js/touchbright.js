@@ -1,46 +1,46 @@
 var TB = {
 
-	Init : function (){
+	Init: function () {
 		w = window;
 		d = document;
 		e = d.documentElement;
 		g = d.getElementsByTagName('body')[0];
 		x = w.innerWidth || e.clientWidth || g.clientWidth;
-		y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+		y = w.innerHeight || e.clientHeight || g.clientHeight;
 		dotsize = 20;
 		PegStroke = '#ffffff';
 		PegBrightness = 0.5;
 		StrokeWidth = 1;
 		dotspace = dotsize * 1.5;
-		columns = Math.floor(x/dotspace);
-		columnpad = x/dotspace % 1 * 10;
-		rows = Math.floor(y/dotspace);
-		rowpad = y/dotspace % 1 * 10;
+		columns = Math.floor(x / dotspace);
+		columnpad = x / dotspace % 1 * 10;
+		rows = Math.floor(y / dotspace);
+		rowpad = y / dotspace % 1 * 10;
 		svgwidth = columns * dotspace;
 		svgheight = rows * dotspace - 60;
-		rows = Math.floor(svgheight/dotspace);
-		TouchBright = d3.select("#BoardArea").append("svg").attr({ "id": "TouchBright", "tabindex": "0", "aria-label":"Rows " + rows + " Columns " + columns});
+		rows = Math.floor(svgheight / dotspace);
+		TouchBright = d3.select("#BoardArea").append("svg").attr({ "id": "TouchBright", "tabindex": "0", "aria-label": "Rows " + rows + " Columns " + columns });
 		CurrentColor = 'blue';
 		ClearPeg = false;
 		initRun = false;
 		showgrid = true;
 		SideNavOpen = false,
-		isInverted = false
+		isInverted = false,
 		CurrentMode = 'draw';
 
-		if(localStorage.getItem('TB_Settings')) {
+		if (localStorage.getItem('TB_Settings')) {
 			RawSettings = localStorage.getItem('TB_Settings');
 			Settings = JSON.parse(RawSettings);
 			dotsize = parseInt(Settings.dotsize);
 			dotspace = dotsize * 1.5;
 			PegBrightness = Settings.brightness;
 		} else {
-			var TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness};
+			var TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness };
 			localStorage.setItem('TB_Settings', JSON.stringify(TB_Settings));
 		}
 
 		$(".color").spectrum({
-			allowEmpty:false,
+			allowEmpty: false,
 			color: CurrentColor,
 			showInput: false,
 			containerClassName: "full-spectrum",
@@ -54,33 +54,33 @@ var TB = {
 				CurrentColor = color;
 			},
 			show: function () {
-				$( "#ClearPeg" ).removeClass( "active" );
+				$("#ClearPeg").removeClass("active");
 				ClearPeg = false;
 			},
-			beforeShow: function () {},
+			beforeShow: function () { },
 			hide: function (color) {
 				CurrentColor = color;
 			},
 			palette: [
 				["rgb(255, 255, 255)"],
-				["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)","rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"],
-				["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)","rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)","rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)","rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)","rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)","rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)","rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)","rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)","rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)","rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
+				["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)", "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"],
+				["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)", "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)", "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)", "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)", "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)", "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)", "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)", "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)", "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
 			]
 
 		});
 
-		$("#ShowGrid").attr('checked', true);
-		$('#sidenav-overlay').on( "click", TB.closeMenu);
+		$("#ShowGrid").attr("checked", true);
+		$('#sidenav-overlay').on("click", TB.closeMenu);
 		$('#DBright').on("change", TB.changeBrightness);
 		$('#DSize').on("change", TB.changeSize);
 		$('#DSize').val(dotsize);
 		$('#DBright').val(PegBrightness);
 
 		var resizeTimer = 0;
-		$(window).on("resize", function(e) {
+		$(window).on("resize", function (e) {
 			clearTimeout(resizeTimer);
-			resizeTimer = setTimeout(function() {
-				if(TB.initRun === true){
+			resizeTimer = setTimeout(function () {
+				if (TB.initRun === true) {
 					if (confirm('Rotating or resizing your screen will clear your drawing. Do you want to continue?')) {
 						TB.updateWindow();
 					}
@@ -91,16 +91,16 @@ var TB = {
 			}, 250);
 		}).resize();
 
-		document.body.addEventListener('touchmove',function(e){
+		document.body.addEventListener("touchmove", function (e) {
 			e.preventDefault();
 		});
 
-		$(window).on("keydown", function(e) {
+		$(window).on("keydown", function (e) {
 			TB.KeyPressControl(e.keyCode);
 		});
 
-		var mediaQueryList = window.matchMedia('print');
-		mediaQueryList.addListener(function(mql) {
+		var mediaQueryList = window.matchMedia("print");
+		mediaQueryList.addListener(function (mql) {
 			if (mql.matches) {
 				console.log('onbeforeprint equivalent');
 			} else {
@@ -110,56 +110,56 @@ var TB = {
 
 	},
 
-	changeSize : function(){
-		dotsize = $('#DSize').val();
+	changeSize: function () {
+		dotsize = $("#DSize").val();
 		dotspace = dotsize * 1.5;
 		columns = Math.floor();
-		columnpad = x/dotspace % 1 * 10;
-		rows = Math.floor(y/dotspace);
-		rowpad = y/dotspace % 1 * 10;
+		columnpad = x / dotspace % 1 * 10;
+		rows = Math.floor(y / dotspace);
+		rowpad = y / dotspace % 1 * 10;
 		svgwidth = columns * dotspace;
 		svgheight = rows * dotspace - 60;
-		rows = Math.floor(svgheight/dotspace);
-		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness};
-		localStorage.setItem('TB_Settings', JSON.stringify(TB_Settings));
+		rows = Math.floor(svgheight / dotspace);
+		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness };
+		localStorage.setItem("TB_Settings", JSON.stringify(TB_Settings));
 		TB.updateWindow();
 	},
 
-	changeBrightness : function(){
-		PegBrightness = $('#DBright').val();
+	changeBrightness: function () {
+		PegBrightness = $("#DBright").val();
 		TB.setBrightness();
-		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness};
-		localStorage.setItem('TB_Settings', JSON.stringify(TB_Settings));
+		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness };
+		localStorage.setItem("TB_Settings", JSON.stringify(TB_Settings));
 	},
 
-	setBrightness : function(){
-		d3.selectAll("rect").each(function(d,i){
+	setBrightness: function () {
+		d3.selectAll("rect").each(function (d, i) {
 			d3.select(this).attr("stroke-opacity", PegBrightness);
 		});
 	},
 
-	updateWindow : function (){
+	updateWindow: function () {
 		x = w.innerWidth || e.clientWidth || g.clientWidth;
-		y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-		columns = Math.floor(x/dotspace);
-		columnpad = Math.round(x/dotspace % 1 * 10);
-		rows = Math.floor(y/dotspace);
-		rowpad = Math.round(y/dotspace % 1 * 10);
-		svgwidth = columns*dotspace;
-		svgheight = rows*dotspace - 50;
-		rows = Math.floor(svgheight/dotspace);
-		TouchBright.attr({"width": svgwidth, "height": svgheight});
+		y = w.innerHeight || e.clientHeight || g.clientHeight;
+		columns = Math.floor(x / dotspace);
+		columnpad = Math.round(x / dotspace % 1 * 10);
+		rows = Math.floor(y / dotspace);
+		rowpad = Math.round(y / dotspace % 1 * 10);
+		svgwidth = columns * dotspace;
+		svgheight = rows * dotspace - 50;
+		rows = Math.floor(svgheight / dotspace);
+		TouchBright.attr({ "width": svgwidth, "height": svgheight });
 		TB.DrawLightBoard();
 		TB.setBrightness();
 	},
 
-	DrawLightBoard : function(){
+	DrawLightBoard: function () {
 		TouchBright.selectAll("*").remove();
-		for (ri = 0; ri < rows; ri++) { 
+		for (ri = 0; ri < rows; ri++) {
 			for (ci = 0; ci < columns; ci++) {
 
 				var peg = TouchBright.append("rect").attr({
-					"id":  (ri+1) + "-" + (ci+1),
+					"id": (ri + 1) + "-" + (ci + 1),
 					"class": "circle",
 					"x": ci * dotspace + columnpad,
 					"y": ri * dotspace + rowpad,
@@ -172,7 +172,7 @@ var TB = {
 					"stroke": PegStroke,
 					"stroke-miterlimit": 10,
 					"stroke-width": StrokeWidth,
-					"focusable":"true",
+					"focusable": "true",
 					"tabindex": "0",
 					"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1)
 				})
@@ -181,106 +181,106 @@ var TB = {
 		TB.BoardListener();
 	},
 
-	FillPeg : function(e){
+	FillPeg: function (e) {
 		peg = d3.select(e);
-		if(ClearPeg === true){
+		if (ClearPeg === true) {
 			peg.attr({
-				'fill':'#000',
-				'stroke':PegStroke,
-				'stroke-width':StrokeWidth,
+				"fill": "#000",
+				"stroke": PegStroke,
+				"stroke-width": StrokeWidth,
 				"fill-opacity": "0"
 			});
 		} else {
 			peg.attr({
 				"fill": CurrentColor,
-				"stroke":PegStroke,
-				"stroke-width":"0",
+				"stroke": PegStroke,
+				"stroke-width": "0",
 				"fill-opacity": "1"
 			});
 		}
 	},
 
-	BoardListener : function() {
+	BoardListener: function () {
 		Pegs = d3.selectAll("rect");
-		Pegs.on('mouseover', function(e){
+		Pegs.on("mouseover", function (e) {
 			Pegs.attr({
-				'class':'circle'
+				"class": "circle"
 			});
 			d3.select(this).attr({
-				'class':'circle selected'
+				"class": "circle selected"
 			});
-		}).on('mouseout', function(e){
+		}).on("mouseout", function (e) {
 			var peg = d3.select(this);
-			if (peg.attr("fill-opacity") != "0"){
+			if (peg.attr("fill-opacity") != "0") {
 				peg.attr({
-					'stroke':PegStroke,
-					'stroke-width':'0'
+					"stroke": PegStroke,
+					"stroke-width": "0"
 				});
 			}
-		}).on('click', function(e){
+		}).on("click", function (e) {
 			TB.FillPeg(this);
 		});
 
 		// TouchBright.on("mousedown", function() {
-  //       	TouchBright.on("mousemove", function() {
-  //       		$('#TouchBright').css( 'cursor', 'crosshair' );
-  //       		Pegs.on('mouseover', function(e){
+		//       	TouchBright.on("mousemove", function() {
+		//       		$('#TouchBright').css( 'cursor', 'crosshair' );
+		//       		Pegs.on('mouseover', function(e){
 		// 			TB.FillPeg(this);
 		// 		});
-  //   		});
-  //   		TouchBright.on("mouseup", function() {
-  //   			$('#TouchBright').css( 'cursor', 'pointer' );
-  //       		TouchBright.on("mousemove",null);
-  //       		Pegs.on("mouseover",null);
-  //   		});
-  //    	});
+		//   		});
+		//   		TouchBright.on("mouseup", function() {
+		//   			$('#TouchBright').css( 'cursor', 'pointer' );
+		//       		TouchBright.on("mousemove",null);
+		//       		Pegs.on("mouseover",null);
+		//   		});
+		//    	});
 
-    	// TouchBright.on("touchstart", function() {
-     //    	TouchBright.on("touchmove", function() {
-     //    		console.log('Touch Move');
-    	// 	});
-    	// 	TouchBright.on("touchend", function() {
-        		
-    	// 	});
-    	// });
+		// TouchBright.on("touchstart", function() {
+		//    	TouchBright.on("touchmove", function() {
+		//    		console.log('Touch Move');
+		// 	});
+		// 	TouchBright.on("touchend", function() {
+
+		// 	});
+		// });
 	},
 
 	invert: function () {
 		Pegs = d3.selectAll("rect");
 		if (isInverted === false) {
-			PegStroke = '#000000';
+			PegStroke = "#000000";
 			Pegs.each(function () {
 				var peg = d3.select(this);
-				if (peg.attr('fill-opacity') === '0') {
+				if (peg.attr("fill-opacity") === "0") {
 					peg.attr({
-						'stroke': PegStroke,
-						'stroke-width': StrokeWidth,
-						'stroke-opacity': PegBrightness
+						"stroke": PegStroke,
+						"stroke-width": StrokeWidth,
+						"stroke-opacity": PegBrightness
 					})
 				} else {
 					peg.attr({
-						'stroke': PegStroke,
-						'stroke-width': "0",
-						'stroke-opacity': PegBrightness
+						"stroke": PegStroke,
+						"stroke-width": "0",
+						"stroke-opacity": PegBrightness
 					})
 				}
 				isInverted = true;
 			});
 		} else {
-			PegStroke = '#ffffff';
+			PegStroke = "#ffffff";
 			Pegs.each(function () {
 				var peg = d3.select(this);
-				if (peg.attr('fill-opacity') === '0') {
+				if (peg.attr("fill-opacity") === "0") {
 					peg.attr({
-						'stroke': PegStroke,
-						'stroke-width': StrokeWidth,
-						'stroke-opacity': PegBrightness
+						"stroke": PegStroke,
+						"stroke-width": StrokeWidth,
+						"stroke-opacity": PegBrightness
 					})
 				} else {
 					peg.attr({
-						'stroke': PegStroke,
-						'stroke-width': "0",
-						'stroke-opacity': PegBrightness
+						"stroke": PegStroke,
+						"stroke-width": "0",
+						"stroke-opacity": PegBrightness
 					})
 				}
 				isInverted = false;
@@ -289,87 +289,86 @@ var TB = {
 		$("body").toggleClass("inverted");
 	},
 
-	ShowGrid : function(){
-		d3.selectAll("rect").each(function(d,i){
+	ShowGrid: function () {
+		d3.selectAll("rect").each(function (d, i) {
 			var elt = d3.select(this);
-			if (elt.attr("fill-opacity") === "0"){
-				elt.attr('stroke',PegStroke);
-				elt.attr('stroke-width',StrokeWidth);
+			if (elt.attr("fill-opacity") === "0") {
+				elt.attr("stroke", PegStroke);
+				elt.attr("stroke-width", StrokeWidth);
 				elt.attr("stroke-opacity", PegBrightness);
 			}
 		});
 	},
 
-	HideGrid : function(){
-		d3.selectAll("rect").each(function(d,i){
+	HideGrid: function () {
+		d3.selectAll("rect").each(function (d, i) {
 			var elt = d3.select(this);
-			elt.attr('stroke','none');
-			elt.attr('stroke-width', StrokeWidth);
+			elt.attr("stroke", "none");
+			elt.attr("stroke-width", StrokeWidth);
 		});
 	},
 
-	ToggleGrid : function (){
+	ToggleGrid: function () {
 		TB.closeMenu();
-		if( $('#ShowGrid').attr('checked') ) {
-			$('#ShowGrid').attr('checked', false);
+		if ($("#ShowGrid").attr("checked")) {
+			$("#ShowGrid").attr("checked", false);
 			TB.HideGrid();
 			showgrid = false;
 		} else {
-			$('#ShowGrid').attr('checked', true);
+			$("#ShowGrid").attr("checked", true);
 			TB.ShowGrid();
 			showgrid = true;
 		}
 	},
 
-	Save : function(){
+	Save: function () {
 		TB.closeMenu();
 		var FileName = prompt("Enter the name of your drawing.", "");
-    	if (FileName != null) {
-	        var savesvg = d3.select("svg").attr({
-	        	"title": "My-TouchBright"
-	        })
-			.node().parentNode.innerHTML;
-
-			var SaveKey = 'TB_' + Math.floor(Date.now() / 1000);
-			var SaveObject = { "type": "Drawing", "Name": '"' + FileName + '"'  , "data": "'" + savesvg + "'" };
+		if (FileName != null) {
+			var savesvg = d3.select("svg").attr({
+				"title": "My-TouchBright"
+			})
+				.node().parentNode.innerHTML;
+			var SaveKey = "TB_" + Math.floor(Date.now() / 1000);
+			var SaveObject = { "type": "Drawing", "Name": '"' + FileName + '"', "data": "'" + savesvg + "'" };
 			localStorage.setItem(SaveKey, JSON.stringify(SaveObject));
-    	}
+		}
 	},
 
-	ListSaved : function(){
+	ListSaved: function () {
 		TB.closeMenu();
 		var SavedDrawings = [];
 		var SavedDrawingNames = [];
-		for (i=0; i < localStorage.length; i++)  {
+		for (i = 0; i < localStorage.length; i++) {
 			key = localStorage.key(i);
-			if( key.substring(0, 3) === 'TB_' ){
+			if (key.substring(0, 3) === "TB_") {
 				SavedDrawings.push(key);
 			}
 		}
-		for (ii=0; ii < SavedDrawings.length; ii++)  {
+		for (ii = 0; ii < SavedDrawings.length; ii++) {
 			var retrievedObject = localStorage.getItem(SavedDrawings[ii]);
 			var drawing = JSON.parse(retrievedObject);
-			if(drawing.type === 'Drawing'){
-				console.log(drawing.Name + ' ' + SavedDrawings[ii]);
+			if (drawing.type === 'Drawing') {
+				console.log(drawing.Name + " " + SavedDrawings[ii]);
 				TB.OpenSaved(SavedDrawings[ii])
 			}
 		}
 	},
 
-	OpenSaved : function(drawing){
+	OpenSaved: function (drawing) {
 		var retrievedObject = localStorage.getItem(drawing);
 		var drawing = JSON.parse(retrievedObject);
-		$('#BoardArea').html(drawing.data);
+		$("#BoardArea").html(drawing.data);
 		TB.BoardListener();
 	},
 
-	ClearBoard : function(){
-		if (confirm('Are you sure you want to clear your drawing?')) {
-			d3.selectAll("rect").each(function(d,i){
+	ClearBoard: function () {
+		if (confirm("Are you sure you want to clear your drawing?")) {
+			d3.selectAll("rect").each(function (d, i) {
 				var elt = d3.select(this).attr({
 					"fill": "#000",
 					"fill-opacity": "0",
-					"stroke":PegStroke,
+					"stroke": PegStroke,
 					"stroke-width": StrokeWidth,
 					"stroke-opacity": PegBrightness
 				})
@@ -377,99 +376,98 @@ var TB = {
 		}
 	},
 
-	openMenu : function(){
-		if(SideNavOpen === false){
-			$('#sidenav-overlay').css({
-				'z-index' : '997',
-				'opacity' : '1'
+	openMenu: function () {
+		if (SideNavOpen === false) {
+			$("#sidenav-overlay").css({
+				"z-index": "997",
+				"opacity": "1"
 			});
-			$('#SettingsMenu').css('left', 0);
+			$("#SettingsMenu").css("left", 0);
 			SideNavOpen = true;
 		}
 	},
 
-	closeMenu : function(){
-		if(SideNavOpen === true){
-			$('#sidenav-overlay').css({
-				'opacity' : '0',
-				'z-index' : '-10'
+	closeMenu: function () {
+		if (SideNavOpen === true) {
+			$("#sidenav-overlay").css({
+				"opacity": "0",
+				"z-index": "-10"
 			});
-			$('#SettingsMenu').css('left', '-240px');
+			$("#SettingsMenu").css("left", "-240px");
 			SideNavOpen = false;
 		}
 	},
 
-	ClearPeg : function(){
-		if( $('#ClearPeg').hasClass("active") ){
+	ClearPeg: function () {
+		if ($("#ClearPeg").hasClass("active")) {
 			ClearPeg = false;
 		} else {
 			ClearPeg = true;
+			CurrentMode = "Erase";
 		}
-		$('#ClearPeg').toggleClass("active");
-		CurrentMode = 'Erase';
+		$("#ClearPeg").toggleClass("active");
 	},
 
-	Print : function (){
+	Print: function () {
 		TB.closeMenu();
 		TB.hideGrid();
 		var savesvg = d3.select("svg")
-		.attr({
-			"title": "My-TouchBright",
-			"version": 1.1,
-			"xmlns": "http://www.w3.org/2000/svg",
-			"style": "background:#000000"
-		})
-		.node().parentNode.innerHTML;
+			.attr({
+				"title": "My-TouchBright",
+				"version": 1.1,
+				"xmlns": "http://www.w3.org/2000/svg",
+				"style": "background:#000000"
+			})
+			.node().parentNode.innerHTML;
 		TB.showGrid();
-		window.open("data:image/svg+xml;base64,"+ btoa(savesvg));
+		window.open("data:image/svg+xml;base64," + btoa(savesvg));
 	},
 
-	KeyPressControl : function (keyCode){
-		console.log('Key: ' + keyCode)
+	KeyPressControl: function (keyCode) {
+		console.log("Key: " + keyCode)
 		isSelected = $('#TouchBright').find('.selected');
 		if (isSelected.length < 1) {
-			$('#1-1').attr("class", "circle selected");
+			$("#1-1").attr("class", "circle selected");
 		} else {
-			selectedId = isSelected.attr('id');
+			selectedId = isSelected.attr("id");
 			currentRow = parseInt(selectedId.split("-")[0]);
 			currentColumn = parseInt(selectedId.split("-")[1]);
-			switch(keyCode){
+			switch (keyCode) {
 				case 37: // left
 					isSelected.attr("class", "circle");
-					if(currentColumn > 1){
-						$('#' + currentRow + '-' + (currentColumn-1) ).attr("class", "circle selected").focus();
-					} else{
-						$('#' + currentRow + '-' + columns ).attr("class", "circle selected").focus();
+					if (currentColumn > 1) {
+						$("#" + currentRow + "-" + (currentColumn - 1)).attr("class", "circle selected").focus();
+					} else {
+						$("#" + currentRow + "-" + columns).attr("class", "circle selected").focus();
 					}
 					break;
 				case 38: // up
 					isSelected.attr("class", "circle");
-					if(currentRow > 1){
-						$('#' + (currentRow-1) + '-' + currentColumn ).attr("class", "circle selected").focus();
+					if (currentRow > 1) {
+						$("#" + (currentRow - 1) + "-" + currentColumn).attr("class", "circle selected").focus();
 					} else {
-						$('#' + rows + '-' + currentColumn ).attr("class", "circle selected").focus();
+						$("#" + rows + "-" + currentColumn).attr("class", "circle selected").focus();
 					}
 					break;
 				case 39: // right
 					isSelected.attr("class", "circle");
-					if(currentColumn < columns){
-						$('#' + currentRow + '-' + (currentColumn+1) ).attr("class", "circle selected").focus();
+					if (currentColumn < columns) {
+						$("#" + currentRow + "-" + (currentColumn + 1)).attr("class", "circle selected").focus();
 					} else {
-						$('#' + currentRow + '-' + 1 ).attr("class", "circle selected").focus();
+						$("#" + currentRow + "-" + 1).attr("class", "circle selected").focus();
 					}
 					break;
 				case 40: // down
 					isSelected.attr("class", "circle");
-					if(currentRow < rows){
-						$('#' + (currentRow+1) + '-' + currentColumn ).attr("class", "circle selected").focus();
+					if (currentRow < rows) {
+						$("#" + (currentRow + 1) + "-" + currentColumn).attr("class", "circle selected").focus();
 					} else {
-						$('#' + 1 + '-' + currentColumn ).attr("class", "circle selected").focus();
+						$("#" + 1 + "-" + currentColumn).attr("class", "circle selected").focus();
 					}
 					break;
 				case 13: // return
-					$('#' + currentRow + '-' + currentColumn ).attr("class", "circle selected");
+					$("#" + currentRow + "-" + currentColumn).attr("class", "circle selected");
 					isSelected = $('#TouchBright').find('.selected').get(0);
-					//console.log(isSelected);
 					TB.FillPeg(isSelected);
 					break;
 				case 73: // i
@@ -488,7 +486,7 @@ var TB = {
 					TB.ToggleGrid();
 					break;
 				default:
-				return;
+					return;
 			}
 		}
 	}
