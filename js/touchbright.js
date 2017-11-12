@@ -28,7 +28,8 @@ var TB = {
 		showgrid = true;
 		SideNavOpen = false,
 		isInverted = false,
-		CurrentMode = 'draw';
+		CurrentMode = 'draw',
+		GridStyle = 'Modern';
 
 		if (localStorage.getItem('TB_Settings')) {
 			RawSettings = localStorage.getItem('TB_Settings');
@@ -36,8 +37,9 @@ var TB = {
 			dotsize = parseInt(Settings.dotsize);
 			dotspace = dotsize * 1.5;
 			PegBrightness = Settings.brightness;
+			GridStyle = Settings.gridstyle;
 		} else {
-			var TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness };
+			var TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
 			localStorage.setItem('TB_Settings', JSON.stringify(TB_Settings));
 		}
 
@@ -75,6 +77,7 @@ var TB = {
 		$('#DSize').on("change", TB.changeSize);
 		$('#DSize').val(dotsize);
 		$('#DBright').val(PegBrightness);
+		$('#GridStyle').val(GridStyle);
 
 		var resizeTimer = 0;
 		$(window).on("resize", function (e) {
@@ -98,8 +101,6 @@ var TB = {
 		AppMenu = document.querySelector('[data-inclusive-menu-opens]');
 		AppMenuButton = new MenuButton(AppMenu);
 		AppMenuButton.on('choose', function (choice) {
-			console.log(choice.textContent)
-
 			switch (choice.textContent) {
 				case "Toggle Grid":
 					TB.ToggleGrid();
@@ -113,7 +114,6 @@ var TB = {
 				default:
 					return;
 			}
-
 		})
 
 		$("#TouchBright").on("keydown", function (e) {
@@ -143,15 +143,22 @@ var TB = {
 		svgwidth = columns * dotspace;
 		svgheight = rows * dotspace - 60;
 		rows = Math.floor(svgheight / dotspace);
-		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness };
+		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
 		localStorage.setItem("TB_Settings", JSON.stringify(TB_Settings));
 		TB.updateWindow();
+	},
+
+	changeGrid: function () {
+		GridStyle = $("#GridStyle").val();
+		TB.updateWindow();
+		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
+		localStorage.setItem("TB_Settings", JSON.stringify(TB_Settings));
 	},
 
 	changeBrightness: function () {
 		PegBrightness = $("#DBright").val();
 		TB.setBrightness();
-		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness };
+		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
 		localStorage.setItem("TB_Settings", JSON.stringify(TB_Settings));
 	},
 
@@ -171,9 +178,13 @@ var TB = {
 		svgwidth = columns * dotspace;
 		svgheight = rows * dotspace - 50;
 		rows = Math.floor(svgheight / dotspace);
-		TouchBright.attr({ "width": svgwidth, "height": svgheight });
+		TouchBright.attr({ "width": svgwidth, "height": svgheight, "aria-label": "Rows " + rows + " Columns " + columns });
 		TB.DrawLightBoard();
 		TB.setBrightness();
+	},
+
+	IsEven: function (n) {
+   return n % 2 == 0;
 	},
 
 	DrawLightBoard: function () {
@@ -181,24 +192,68 @@ var TB = {
 		for (ri = 0; ri < rows; ri++) {
 			for (ci = 0; ci < columns; ci++) {
 
-				var peg = TouchBright.append("rect").attr({
-					"id": (ri + 1) + "-" + (ci + 1),
-					"class": "circle",
-					"x": ci * dotspace + columnpad,
-					"y": ri * dotspace + rowpad,
-					"width": dotsize,
-					"height": dotsize,
-					"rx": dotsize,
-					"ry": dotsize,
-					"fill": "#000",
-					"fill-opacity": "0",
-					"stroke": PegStroke,
-					"stroke-miterlimit": 10,
-					"stroke-width": StrokeWidth,
-					"focusable": "true",
-					"tabindex": "0",
-					"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1)
-				})
+				if (GridStyle == "Retro"){
+					if (TB.IsEven((ri + 1))) {
+						var peg = TouchBright.append("rect").attr({
+							"id": (ri + 1) + "-" + (ci + 1),
+							"class": "circle",
+							"x": ci * dotspace + columnpad,
+							"y": ri * dotspace + rowpad,
+							"width": dotsize,
+							"height": dotsize,
+							"rx": dotsize,
+							"ry": dotsize,
+							"fill": "#000",
+							"fill-opacity": "0",
+							"stroke": PegStroke,
+							"stroke-miterlimit": 10,
+							"stroke-width": StrokeWidth,
+							"focusable": "true",
+							"tabindex": "0",
+							"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1)
+						})
+					} else {
+						if (ci < (columns - 1)) {
+							var peg = TouchBright.append("rect").attr({
+								"id": (ri + 1) + "-" + (ci + 1),
+								"class": "circle",
+								"x": ci * dotspace + columnpad + (dotsize * .8),
+								"y": ri * dotspace + rowpad,
+								"width": dotsize,
+								"height": dotsize,
+								"rx": dotsize,
+								"ry": dotsize,
+								"fill": "#000",
+								"fill-opacity": "0",
+								"stroke": PegStroke,
+								"stroke-miterlimit": 10,
+								"stroke-width": StrokeWidth,
+								"focusable": "true",
+								"tabindex": "0",
+								"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1)
+							})
+						}
+					}
+				} else {
+					var peg = TouchBright.append("rect").attr({
+						"id": (ri + 1) + "-" + (ci + 1),
+						"class": "circle",
+						"x": ci * dotspace + columnpad,
+						"y": ri * dotspace + rowpad,
+						"width": dotsize,
+						"height": dotsize,
+						"rx": dotsize,
+						"ry": dotsize,
+						"fill": "#000",
+						"fill-opacity": "0",
+						"stroke": PegStroke,
+						"stroke-miterlimit": 10,
+						"stroke-width": StrokeWidth,
+						"focusable": "true",
+						"tabindex": "0",
+						"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1)
+					})
+				}
 			}
 		}
 		TB.BoardListener();

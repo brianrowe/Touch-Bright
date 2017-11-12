@@ -263,15 +263,11 @@ body.inverted [data-inclusive-menu]  button {
 
 	@media print {
 
-	#TouchBright{
-		background: red;
-	}
-
 	#TouchBright .circle{
 		stroke: none;
 	}
 
-	#menu, #SettingsMenu{
+	#menubar{
 		display: none;
 	}
 }
