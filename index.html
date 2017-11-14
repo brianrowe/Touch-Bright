@@ -4,24 +4,24 @@
 	<title>Touch-Bright</title>
 	<meta content="">
 	<meta name="viewport" content="initial-scale=1.0">
-	<meta name="description" content="An accessible digital spin-off of the classic Lite•Brite™" />
+	<meta name="description" content="An accessible digital spin-off of the classic Lite•Brite®" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta name="apple-mobile-web-app-title" content="Touch-Bright">
 	<meta itemprop="name" content="Touch-Bright">
-	<meta itemprop="description" content="An accessible digital spin-off of the classic Lite•Brite™">
+	<meta itemprop="description" content="An accessible digital spin-off of the classic Lite•Brite®">
 	<meta itemprop="image" content="https://www.touch-bright.com/images/gimage.jpg">
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="Touch-Bright">
 	<meta name="twitter:site" content="@brianrowe" />
-	<meta name="twitter:description" content="An accessible digital spin-off of the classic Lite•Brite™">
+	<meta name="twitter:description" content="An accessible digital spin-off of the classic Lite•Brite®">
 	<meta name="twitter:creator" content="@brianrowe">
 	<meta name="twitter:image:src" content="https://www.touch-bright.com/images/timage.jpg">
 	<meta property="og:title" content="Touch-Bright" />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="https://www.touch-bright.com" />
 	<meta property="og:image" content="https://www.touch-bright.com/images/fbimage.jpg" />
-	<meta property="og:description" content="An accessible digital spin-off of the classic Lite•Brite™" />
+	<meta property="og:description" content="An accessible digital spin-off of the classic Lite•Brite®" />
 	<meta property="og:site_name" content="Touch-Bright" />
 	<link rel="apple-touch-icon" sizes="57x57" href="images/icons/apple-touch-icon-57x57.png">
 	<link rel="apple-touch-icon" sizes="60x60" href="images/icons/apple-touch-icon-60x60.png">
@@ -46,13 +46,11 @@
 	<script type="text/javascript" src="js/lib.js"></script>
 	<script type="text/javascript" src="js/touchbright.js"></script>
 
-	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-70778531-1"></script>
 	<script>
 		window.dataLayer = window.dataLayer || [];
 		function gtag() { dataLayer.push(arguments); }
 		gtag('js', new Date());
-
 		gtag('config', 'UA-70778531-1');
 	</script>
 
@@ -60,8 +58,6 @@
 
 <body>
 	<div id="fb-root"></div>
-
-
 
 	<div id="page">
 
@@ -92,6 +88,7 @@
 				</button>
 				<button id="PullPeg" tabindex="0" onclick="TB.ClearPeg()" onkeyup="if(event.keyCode == 13) TB.PullPeg()" aria-label="Clear Circle"></button>
 				<input type='text' class='color' value='red' />
+				
 			</div>
 		</div>
 
@@ -114,6 +111,7 @@
 		</div>
 
 	</div>
+	<div id="CurrentMode" aria-live="polite" tabindex="-1"></div>
 
 	<script>
 		$(function () {

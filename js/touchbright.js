@@ -1,6 +1,8 @@
 var TB = {
 
 	Init: function () {
+		ScreenWidth = window.screen.availWidth;
+		ScreenHeight = window.screen.availHeight;
 		w = window;
 		d = document;
 		e = d.documentElement;
@@ -22,11 +24,10 @@ var TB = {
 		svgheight = rows * dotspace - 60;
 		rows = Math.floor(svgheight / dotspace);
 		TouchBright = d3.select("#BoardArea").append("svg").attr({ "id": "TouchBright", "tabindex": "0", "aria-label": "Rows " + rows + " Columns " + columns });
-		CurrentColor = 'blue';
+		CurrentColor = '#0000FF';
 		ClearPeg = false;
 		initRun = false;
 		showgrid = true;
-		SideNavOpen = false,
 		isInverted = false,
 		CurrentMode = 'draw',
 		GridStyle = 'Modern';
@@ -64,6 +65,8 @@ var TB = {
 			beforeShow: function () { },
 			hide: function (color) {
 				CurrentColor = color;
+				$("#CurrentMode").text("Draw Mode");
+				$("#TouchBright").focus();
 			},
 			palette: [
 				["rgb(255, 255, 255)"],
@@ -210,7 +213,8 @@ var TB = {
 							"stroke-width": StrokeWidth,
 							"focusable": "true",
 							"tabindex": "0",
-							"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1)
+							"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1) + " Not Colored"
+
 						})
 					} else {
 						if (ci < (columns - 1)) {
@@ -230,7 +234,8 @@ var TB = {
 								"stroke-width": StrokeWidth,
 								"focusable": "true",
 								"tabindex": "0",
-								"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1)
+								"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1) + " Not Colored"
+
 							})
 						}
 					}
@@ -251,7 +256,7 @@ var TB = {
 						"stroke-width": StrokeWidth,
 						"focusable": "true",
 						"tabindex": "0",
-						"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1)
+						"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1) + " Not Colored"
 					})
 				}
 			}
@@ -260,20 +265,26 @@ var TB = {
 	},
 
 	FillPeg: function (e) {
+		ReadableColor = ntc.name(CurrentColor);
+		CurrentId = e.id;
+		currentRow = parseInt(CurrentId.split("-")[0]);
+		currentColumn = parseInt(CurrentId.split("-")[1]);
 		peg = d3.select(e);
 		if (ClearPeg === true) {
 			peg.attr({
 				"fill": "#000",
 				"stroke": PegStroke,
 				"stroke-width": StrokeWidth,
-				"fill-opacity": "0"
+				"fill-opacity": "0",
+				"aria-label": "Row " + (currentRow) + " Column " + (currentColumn) + " Not Colored"
 			});
 		} else {
 			peg.attr({
 				"fill": CurrentColor,
 				"stroke": PegStroke,
 				"stroke-width": "0",
-				"fill-opacity": "1"
+				"fill-opacity": "1",
+				"aria-label": "Row " + (currentRow) + " Column " + (currentColumn) + " Current Color is " + ReadableColor[1] + " Color Hue is " + ReadableColor[3]
 			});
 		}
 	},
@@ -397,7 +408,6 @@ var TB = {
 	},
 
 	Save: function () {
-		TB.closeMenu();
 		var FileName = prompt("Enter the name of your drawing.", "");
 		if (FileName != null) {
 			var savesvg = d3.select("svg").attr({
@@ -411,7 +421,6 @@ var TB = {
 	},
 
 	ListSaved: function () {
-		TB.closeMenu();
 		var SavedDrawings = [];
 		var SavedDrawingNames = [];
 		for (i = 0; i < localStorage.length; i++) {
@@ -439,19 +448,13 @@ var TB = {
 
 	ClearBoard: function () {
 		if (confirm("Are you sure you want to clear your drawing?")) {
-			d3.selectAll("rect").each(function (d, i) {
-				var elt = d3.select(this).attr({
-					"fill": "#000",
-					"fill-opacity": "0",
-					"stroke": PegStroke,
-					"stroke-width": StrokeWidth,
-					"stroke-opacity": PegBrightness
-				})
-			});
+			TB.updateWindow();
+			$("#1-1").attr("class", "circle selected").focus();
 		}
 	},
 
 	ClearPeg: function () {
+		$("#CurrentMode").text("Erase Mode");
 		if ($("#ClearPeg").hasClass("active")) {
 			ClearPeg = false;
 		} else {
