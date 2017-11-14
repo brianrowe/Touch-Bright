@@ -1,6 +1,8 @@
 var TB = {
 
 	Init: function () {
+		ScreenWidth = window.screen.availWidth;
+		ScreenHeight = window.screen.availHeight;
 		w = window;
 		d = document;
 		e = d.documentElement;
@@ -9,24 +11,23 @@ var TB = {
 		y = w.innerHeight || e.clientHeight || g.clientHeight;
 		m = document.getElementById('modal_window'),
 		p = document.getElementById('page');
-		HoleSize = 20;
-		HoleStroke = '#ffffff';
-		HoleBrightness = 0.5;
+		dotsize = 20;
+		PegStroke = '#ffffff';
+		PegBrightness = 0.5;
 		StrokeWidth = 1;
-		HoleSpace = HoleSize * 1.5;
-		columns = Math.floor(x / HoleSpace);
-		columnpad = x / HoleSpace % 1 * 10;
-		rows = Math.floor(y / HoleSpace);
-		rowpad = y / HoleSpace % 1 * 10;
-		svgwidth = columns * HoleSpace;
-		svgheight = rows * HoleSpace - 60;
-		rows = Math.floor(svgheight / HoleSpace);
+		dotspace = dotsize * 1.5;
+		columns = Math.floor(x / dotspace);
+		columnpad = x / dotspace % 1 * 10;
+		rows = Math.floor(y / dotspace);
+		rowpad = y / dotspace % 1 * 10;
+		svgwidth = columns * dotspace;
+		svgheight = rows * dotspace - 60;
+		rows = Math.floor(svgheight / dotspace);
 		TouchBright = d3.select("#BoardArea").append("svg").attr({ "id": "TouchBright", "tabindex": "0", "aria-label": "Rows " + rows + " Columns " + columns });
 		CurrentColor = '#0000FF';
 		ClearPeg = false;
 		initRun = false;
 		showgrid = true;
-		SideNavOpen = false,
 		isInverted = false,
 		CurrentMode = 'draw',
 		GridStyle = 'Modern';
@@ -34,12 +35,12 @@ var TB = {
 		if (localStorage.getItem('TB_Settings')) {
 			RawSettings = localStorage.getItem('TB_Settings');
 			Settings = JSON.parse(RawSettings);
-			HoleSize = parseInt(Settings.HoleSize);
-			HoleSpace = HoleSize * 1.5;
-			HoleBrightness = Settings.brightness;
+			dotsize = parseInt(Settings.dotsize);
+			dotspace = dotsize * 1.5;
+			PegBrightness = Settings.brightness;
 			GridStyle = Settings.gridstyle;
 		} else {
-			var TB_Settings = { "type": "Settings", "HoleSize": HoleSize, "brightness": HoleBrightness, "gridstyle": GridStyle };
+			var TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
 			localStorage.setItem('TB_Settings', JSON.stringify(TB_Settings));
 		}
 
@@ -64,6 +65,8 @@ var TB = {
 			beforeShow: function () { },
 			hide: function (color) {
 				CurrentColor = color;
+				$("#CurrentMode").text("Draw Mode");
+				$("#TouchBright").focus();
 			},
 			palette: [
 				["rgb(255, 255, 255)"],
@@ -75,8 +78,8 @@ var TB = {
 
 		$('#DBright').on("change", TB.changeBrightness);
 		$('#DSize').on("change", TB.changeSize);
-		$('#DSize').val(HoleSize);
-		$('#DBright').val(HoleBrightness);
+		$('#DSize').val(dotsize);
+		$('#DBright').val(PegBrightness);
 		$('#GridStyle').val(GridStyle);
 
 		var resizeTimer = 0;
@@ -134,16 +137,16 @@ var TB = {
 	},
 
 	changeSize: function () {
-		HoleSize = $("#DSize").val();
-		HoleSpace = HoleSize * 1.5;
+		dotsize = $("#DSize").val();
+		dotspace = dotsize * 1.5;
 		columns = Math.floor();
-		columnpad = x / HoleSpace % 1 * 10;
-		rows = Math.floor(y / HoleSpace);
-		rowpad = y / HoleSpace % 1 * 10;
-		svgwidth = columns * HoleSpace;
-		svgheight = rows * HoleSpace - 60;
-		rows = Math.floor(svgheight / HoleSpace);
-		TB_Settings = { "type": "Settings", "HoleSize": HoleSize, "brightness": HoleBrightness, "gridstyle": GridStyle };
+		columnpad = x / dotspace % 1 * 10;
+		rows = Math.floor(y / dotspace);
+		rowpad = y / dotspace % 1 * 10;
+		svgwidth = columns * dotspace;
+		svgheight = rows * dotspace - 60;
+		rows = Math.floor(svgheight / dotspace);
+		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
 		localStorage.setItem("TB_Settings", JSON.stringify(TB_Settings));
 		TB.updateWindow();
 	},
@@ -151,33 +154,33 @@ var TB = {
 	changeGrid: function () {
 		GridStyle = $("#GridStyle").val();
 		TB.updateWindow();
-		TB_Settings = { "type": "Settings", "HoleSize": HoleSize, "brightness": HoleBrightness, "gridstyle": GridStyle };
+		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
 		localStorage.setItem("TB_Settings", JSON.stringify(TB_Settings));
 	},
 
 	changeBrightness: function () {
-		HoleBrightness = $("#DBright").val();
+		PegBrightness = $("#DBright").val();
 		TB.setBrightness();
-		TB_Settings = { "type": "Settings", "HoleSize": HoleSize, "brightness": HoleBrightness, "gridstyle": GridStyle };
+		TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
 		localStorage.setItem("TB_Settings", JSON.stringify(TB_Settings));
 	},
 
 	setBrightness: function () {
 		d3.selectAll("rect").each(function (d, i) {
-			d3.select(this).attr("stroke-opacity", HoleBrightness);
+			d3.select(this).attr("stroke-opacity", PegBrightness);
 		});
 	},
 
 	updateWindow: function () {
 		x = w.innerWidth || e.clientWidth || g.clientWidth;
 		y = w.innerHeight || e.clientHeight || g.clientHeight;
-		columns = Math.floor(x / HoleSpace);
-		columnpad = Math.round(x / HoleSpace % 1 * 10);
-		rows = Math.floor(y / HoleSpace);
-		rowpad = Math.round(y / HoleSpace % 1 * 10);
-		svgwidth = columns * HoleSpace;
-		svgheight = rows * HoleSpace - 50;
-		rows = Math.floor(svgheight / HoleSpace);
+		columns = Math.floor(x / dotspace);
+		columnpad = Math.round(x / dotspace % 1 * 10);
+		rows = Math.floor(y / dotspace);
+		rowpad = Math.round(y / dotspace % 1 * 10);
+		svgwidth = columns * dotspace;
+		svgheight = rows * dotspace - 50;
+		rows = Math.floor(svgheight / dotspace);
 		TouchBright.attr({ "width": svgwidth, "height": svgheight, "aria-label": "Rows " + rows + " Columns " + columns });
 		TB.DrawLightBoard();
 		TB.setBrightness();
@@ -194,59 +197,61 @@ var TB = {
 
 				if (GridStyle == "Retro"){
 					if (TB.IsEven((ri + 1))) {
-						peghole = TouchBright.append("rect").attr({
+						var peg = TouchBright.append("rect").attr({
 							"id": (ri + 1) + "-" + (ci + 1),
 							"class": "circle",
-							"x": ci * HoleSpace + columnpad,
-							"y": ri * HoleSpace + rowpad,
-							"width": HoleSize,
-							"height": HoleSize,
-							"rx": HoleSize,
-							"ry": HoleSize,
+							"x": ci * dotspace + columnpad,
+							"y": ri * dotspace + rowpad,
+							"width": dotsize,
+							"height": dotsize,
+							"rx": dotsize,
+							"ry": dotsize,
 							"fill": "#000",
 							"fill-opacity": "0",
-							"stroke": HoleStroke,
+							"stroke": PegStroke,
 							"stroke-miterlimit": 10,
 							"stroke-width": StrokeWidth,
 							"focusable": "true",
 							"tabindex": "0",
 							"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1) + " Not Colored"
+
 						})
 					} else {
 						if (ci < (columns - 1)) {
-							peghole = TouchBright.append("rect").attr({
+							var peg = TouchBright.append("rect").attr({
 								"id": (ri + 1) + "-" + (ci + 1),
 								"class": "circle",
-								"x": ci * HoleSpace + columnpad + (HoleSize * .8),
-								"y": ri * HoleSpace + rowpad,
-								"width": HoleSize,
-								"height": HoleSize,
-								"rx": HoleSize,
-								"ry": HoleSize,
+								"x": ci * dotspace + columnpad + (dotsize * .8),
+								"y": ri * dotspace + rowpad,
+								"width": dotsize,
+								"height": dotsize,
+								"rx": dotsize,
+								"ry": dotsize,
 								"fill": "#000",
 								"fill-opacity": "0",
-								"stroke": HoleStroke,
+								"stroke": PegStroke,
 								"stroke-miterlimit": 10,
 								"stroke-width": StrokeWidth,
 								"focusable": "true",
 								"tabindex": "0",
 								"aria-label": "Row " + (ri + 1) + " Column " + (ci + 1) + " Not Colored"
+
 							})
 						}
 					}
 				} else {
-					peghole = TouchBright.append("rect").attr({
+					var peg = TouchBright.append("rect").attr({
 						"id": (ri + 1) + "-" + (ci + 1),
 						"class": "circle",
-						"x": ci * HoleSpace + columnpad,
-						"y": ri * HoleSpace + rowpad,
-						"width": HoleSize,
-						"height": HoleSize,
-						"rx": HoleSize,
-						"ry": HoleSize,
+						"x": ci * dotspace + columnpad,
+						"y": ri * dotspace + rowpad,
+						"width": dotsize,
+						"height": dotsize,
+						"rx": dotsize,
+						"ry": dotsize,
 						"fill": "#000",
 						"fill-opacity": "0",
-						"stroke": HoleStroke,
+						"stroke": PegStroke,
 						"stroke-miterlimit": 10,
 						"stroke-width": StrokeWidth,
 						"focusable": "true",
@@ -268,7 +273,7 @@ var TB = {
 		if (ClearPeg === true) {
 			peg.attr({
 				"fill": "#000",
-				"stroke": HoleStroke,
+				"stroke": PegStroke,
 				"stroke-width": StrokeWidth,
 				"fill-opacity": "0",
 				"aria-label": "Row " + (currentRow) + " Column " + (currentColumn) + " Not Colored"
@@ -276,14 +281,12 @@ var TB = {
 		} else {
 			peg.attr({
 				"fill": CurrentColor,
-				"stroke": HoleStroke,
+				"stroke": PegStroke,
 				"stroke-width": "0",
 				"fill-opacity": "1",
-				"aria-label": "Row " + (currentRow) + " Column " + (currentColumn) + " Current Color is " + ReadableColor [1] + " Color Hue is " + ReadableColor [3]
+				"aria-label": "Row " + (currentRow) + " Column " + (currentColumn) + " Current Color is " + ReadableColor[1] + " Color Hue is " + ReadableColor[3]
 			});
 		}
-
-		
 	},
 
 	BoardListener: function () {
@@ -299,7 +302,7 @@ var TB = {
 			var peg = d3.select(this);
 			if (peg.attr("fill-opacity") != "0") {
 				peg.attr({
-					"stroke": HoleStroke,
+					"stroke": PegStroke,
 					"stroke-width": "0"
 				});
 			}
@@ -334,39 +337,39 @@ var TB = {
 	invert: function () {
 		Pegs = d3.selectAll("rect");
 		if (isInverted === false) {
-			HoleStroke = "#000000";
+			PegStroke = "#000000";
 			Pegs.each(function () {
 				var peg = d3.select(this);
 				if (peg.attr("fill-opacity") === "0") {
 					peg.attr({
-						"stroke": HoleStroke,
+						"stroke": PegStroke,
 						"stroke-width": StrokeWidth,
-						"stroke-opacity": HoleBrightness
+						"stroke-opacity": PegBrightness
 					})
 				} else {
 					peg.attr({
-						"stroke": HoleStroke,
+						"stroke": PegStroke,
 						"stroke-width": "0",
-						"stroke-opacity": HoleBrightness
+						"stroke-opacity": PegBrightness
 					})
 				}
 				isInverted = true;
 			});
 		} else {
-			HoleStroke = "#ffffff";
+			PegStroke = "#ffffff";
 			Pegs.each(function () {
 				var peg = d3.select(this);
 				if (peg.attr("fill-opacity") === "0") {
 					peg.attr({
-						"stroke": HoleStroke,
+						"stroke": PegStroke,
 						"stroke-width": StrokeWidth,
-						"stroke-opacity": HoleBrightness
+						"stroke-opacity": PegBrightness
 					})
 				} else {
 					peg.attr({
-						"stroke": HoleStroke,
+						"stroke": PegStroke,
 						"stroke-width": "0",
-						"stroke-opacity": HoleBrightness
+						"stroke-opacity": PegBrightness
 					})
 				}
 				isInverted = false;
@@ -379,9 +382,9 @@ var TB = {
 		d3.selectAll("rect").each(function (d, i) {
 			var elt = d3.select(this);
 			if (elt.attr("fill-opacity") === "0") {
-				elt.attr("stroke", HoleStroke);
+				elt.attr("stroke", PegStroke);
 				elt.attr("stroke-width", StrokeWidth);
-				elt.attr("stroke-opacity", HoleBrightness);
+				elt.attr("stroke-opacity", PegBrightness);
 			}
 		});
 	},
@@ -446,10 +449,12 @@ var TB = {
 	ClearBoard: function () {
 		if (confirm("Are you sure you want to clear your drawing?")) {
 			TB.updateWindow();
+			$("#1-1").attr("class", "circle selected").focus();
 		}
 	},
 
 	ClearPeg: function () {
+		$("#CurrentMode").text("Erase Mode");
 		if ($("#ClearPeg").hasClass("active")) {
 			ClearPeg = false;
 		} else {
@@ -460,6 +465,7 @@ var TB = {
 	},
 
 	Print: function () {
+		TB.closeMenu();
 		TB.hideGrid();
 		var savesvg = d3.select("svg")
 			.attr({
@@ -473,21 +479,29 @@ var TB = {
 		window.open("data:image/svg+xml;base64," + btoa(savesvg));
 	},
 
+
+
+
 	HandleModal: function(){
 		function swap() {
 			p.parentNode.insertBefore(m, p);
 		}
 		swap();
+
+		// list out the vars
 		var mOverlay = getId('modal_window'),
+			//mOpen = getId('modal_open'),
 			mClose = getId('modal_close'),
 			modal = getId('modal_holder'),
 			allNodes = document.querySelectorAll("*"),
 			modalOpen = false,
 			lastFocus,
 			i;
+		// Let's cut down on what we need to type to get an ID
 		function getId(id) {
 			return document.getElementById(id);
 		}
+		// Let's open the modal
 		ShowOptions = function modalShow() {
 			lastFocus = document.activeElement;
 			mOverlay.setAttribute('aria-hidden', 'false');
@@ -495,6 +509,8 @@ var TB = {
 			modal.setAttribute('tabindex', '0');
 			modal.focus();
 		}
+		// binds to both the button click and the escape key to close the modal window
+		// but only if modalOpen is set to true
 		function modalClose(event) {
 			if (modalOpen && (!event.keyCode || event.keyCode === 27)) {
 				mOverlay.setAttribute('aria-hidden', 'true');
@@ -503,19 +519,29 @@ var TB = {
 				lastFocus.focus();
 			}
 		}
+		// Restrict focus to the modal window when it's open.
+		// Tabbing will just loop through the whole modal.
+		// Shift + Tab will allow backup to the top of the modal,
+		// and then stop.
 		function focusRestrict(event) {
 			if (modalOpen && !modal.contains(event.target)) {
 				event.stopPropagation();
 				modal.focus();
 			}
 		}
+		// Close modal window by clicking on the overlay
 		mOverlay.addEventListener('click', function (e) {
 			if (e.target == modal.parentNode) {
 				modalClose(e);
 			}
 		}, false);
+		// open modal by btn click/hit
+		//mOpen.addEventListener('click', modalShow);
+		// close modal by btn click/hit
 		mClose.addEventListener('click', modalClose);
+		// close modal by keydown, but only if modal is open
 		document.addEventListener('keydown', modalClose);
+		// restrict tab focus on elements only inside modal window
 		for (i = 0; i < allNodes.length; i++) {
 			allNodes.item(i).addEventListener('focus', focusRestrict);
 		}

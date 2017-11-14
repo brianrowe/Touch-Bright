@@ -18,6 +18,18 @@ body.inverted {
 	background-color: #ffffff;
 }
 
+#CurrentMode{
+	color:#000000;
+	z-index: -10000;
+	position: absolute;
+  left: -1000px;
+
+}
+
+body.inverted #CurrentMode{
+	color:#ffffff
+}
+
 button{
 	-webkit-appearance: none;
   -webkit-user-select: none;
@@ -76,7 +88,7 @@ button{
 
 #ClearBoard {
 	background: red;
-	color: #fff;
+	color: #ffffff;
 	display: block;
 	border-radius: 30px;
 	width: 30px;
