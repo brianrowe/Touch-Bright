@@ -9,7 +9,6 @@ var TB = {
 		g = d.getElementsByTagName('body')[0];
 		x = w.innerWidth || e.clientWidth || g.clientWidth;
 		y = w.innerHeight || e.clientHeight || g.clientHeight;
-		m = document.getElementById('modal_window'),
 		p = document.getElementById('page');
 		dotsize = 20;
 		PegStroke = '#ffffff';
@@ -109,7 +108,7 @@ var TB = {
 					TB.ToggleGrid();
 					break;
 				case "Grid Options":
-					ShowOptions();
+					//ShowOptions('settings_modal');
 					break;
 				case "Invert Screen":
 					TB.invert();
@@ -131,8 +130,6 @@ var TB = {
 				console.log('onafterprint equivalent');
 			}
 		});
-
-		TB.HandleModal();
 
 	},
 
@@ -478,75 +475,6 @@ var TB = {
 		TB.showGrid();
 		window.open("data:image/svg+xml;base64," + btoa(savesvg));
 	},
-
-
-
-
-	HandleModal: function(){
-		function swap() {
-			p.parentNode.insertBefore(m, p);
-		}
-		swap();
-
-		// list out the vars
-		var mOverlay = getId('modal_window'),
-			//mOpen = getId('modal_open'),
-			mClose = getId('modal_close'),
-			modal = getId('modal_holder'),
-			allNodes = document.querySelectorAll("*"),
-			modalOpen = false,
-			lastFocus,
-			i;
-		// Let's cut down on what we need to type to get an ID
-		function getId(id) {
-			return document.getElementById(id);
-		}
-		// Let's open the modal
-		ShowOptions = function modalShow() {
-			lastFocus = document.activeElement;
-			mOverlay.setAttribute('aria-hidden', 'false');
-			modalOpen = true;
-			modal.setAttribute('tabindex', '0');
-			modal.focus();
-		}
-		// binds to both the button click and the escape key to close the modal window
-		// but only if modalOpen is set to true
-		function modalClose(event) {
-			if (modalOpen && (!event.keyCode || event.keyCode === 27)) {
-				mOverlay.setAttribute('aria-hidden', 'true');
-				modal.setAttribute('tabindex', '-1');
-				modalOpen = false;
-				lastFocus.focus();
-			}
-		}
-		// Restrict focus to the modal window when it's open.
-		// Tabbing will just loop through the whole modal.
-		// Shift + Tab will allow backup to the top of the modal,
-		// and then stop.
-		function focusRestrict(event) {
-			if (modalOpen && !modal.contains(event.target)) {
-				event.stopPropagation();
-				modal.focus();
-			}
-		}
-		// Close modal window by clicking on the overlay
-		mOverlay.addEventListener('click', function (e) {
-			if (e.target == modal.parentNode) {
-				modalClose(e);
-			}
-		}, false);
-		// open modal by btn click/hit
-		//mOpen.addEventListener('click', modalShow);
-		// close modal by btn click/hit
-		mClose.addEventListener('click', modalClose);
-		// close modal by keydown, but only if modal is open
-		document.addEventListener('keydown', modalClose);
-		// restrict tab focus on elements only inside modal window
-		for (i = 0; i < allNodes.length; i++) {
-			allNodes.item(i).addEventListener('focus', focusRestrict);
-		}
-	},
-
 
 	KeyPressControl: function (keyCode) {
 		console.log("Key: " + keyCode)

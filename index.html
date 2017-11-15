@@ -1,4 +1,4 @@
-<html itemscope itemtype="http://schema.org/Article" lang="en">
+<html lang="en">
 
 <head>
 	<title>Touch-Bright</title>
@@ -41,11 +41,10 @@
 	<meta name="msapplication-TileColor" content="#da532c">
 	<meta name="msapplication-TileImage" content="images/icons/mstile-144x144.png">
 	<meta name="theme-color" content="#ffffff">
-	<link rel="stylesheet" type="text/css" href="css/core.css">
-	<link rel="stylesheet" type="text/css" href="css/touchbright.css">
-	<script type="text/javascript" src="js/lib.js"></script>
-	<script type="text/javascript" src="js/touchbright.js"></script>
-
+	<link rel="stylesheet" type="text/css" href="css/spectrum.css" media="none" onload="if(media!='all')media='all'">
+	<link rel="stylesheet" type="text/css" href="css/a11y.modal.css" media="none" onload="if(media!='all')media='all'">
+	<link rel="stylesheet" type="text/css" href="css/carbon.css" media="none" onload="if(media!='all')media='all'">
+	<link rel="stylesheet" type="text/css" href="css/touchbright.css" media="none" onload="if(media!='all')media='all'">
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-70778531-1"></script>
 	<script>
 		window.dataLayer = window.dataLayer || [];
@@ -53,70 +52,120 @@
 		gtag('js', new Date());
 		gtag('config', 'UA-70778531-1');
 	</script>
-
 </head>
 
 <body>
 	<div id="fb-root"></div>
 
-	<div id="page">
-
-		<div id="menubar">
-			<div class="left">
-				<div data-inclusive-menu>
-					<button data-inclusive-menu-opens="nav">
-						Menu
-						<span aria-hidden="true">&#x25be;</span>
-					</button>
-					<div id="nav" data-inclusive-menu-from="left">
-						<button>Toggle Grid</button>
-						<button>Grid Options</button>
-						<button>Invert Screen</button>
-						<!-- 
-						<button>Save Picture</button>
-						<button>Open Picture</button>
-						<button>Print Picture</button>
-						<button>Touch-Bright Help</button>
-						<button>About Touch-Bright</button>
-						-->
-					</div>
+	<div id="menubar">
+		<div class="left">
+			<div data-inclusive-menu>
+				<button data-inclusive-menu-opens="nav">Menu<span aria-hidden="true">&#x25be;</span></button>
+				<div id="nav" data-inclusive-menu-from="left">
+					<button>Toggle Grid</button>
+					<button type="button" data-modal-target="#Settings_Modal">Grid Options</button>
+					<button>Invert Screen</button>
+					<button type="button" data-modal-target="#Help_Modal">Touch-Bright Help</button>
+					<!-- 
+					<button>Save Picture</button>
+					<button>Open Picture</button>
+					<button>Print Picture</button>
+					<button>About Touch-Bright</button>
+					-->
 				</div>
 			</div>
-			<div class="right">
-				<button id="ClearBoard" tabindex="0" onclick="TB.ClearBoard()" onkeyup="if(event.keyCode == 13) TB.ClearBoard()" aria-label="Clear Board">
-					<span aria-hidden="true">&#10006;</span>
-				</button>
-				<button id="PullPeg" tabindex="0" onclick="TB.ClearPeg()" onkeyup="if(event.keyCode == 13) TB.PullPeg()" aria-label="Clear Circle"></button>
-				<input type='text' class='color' value='red' />
-				
-			</div>
 		</div>
-
-		<div id="BoardArea"></div>
-
-		<div class="modal-overlay" id="modal_window" aria-hidden="true" role="dialog" aria-labelledby="modal_title">
-			<div class="modal-content" id="modal_holder" role="document">
-				<h1 id="modal_title">Grid Options</h1>
-				<p>Dot Size</p>
-				<input id="DSize" type="range" min="10" max="30" step="5" value="0" />
-				<p>Dot Brightness</p>
-				<input id="DBright" type="range" min="0" max="1" step=".1" value="0" />
-				<p>Grid Style</p>
-				<select id="GridStyle" onchange="TB.changeGrid()">
-					<option value="Modern">Modern</option>
-					<option value="Retro">Retro</option>>
-				</select>
-				<button class="btn-close" id="modal_close" type="button" aria-label="close">&times;</button>
-			</div>
+		<div class="right">
+			<button id="ClearBoard" tabindex="0" onclick="TB.ClearBoard()" onkeyup="if(event.keyCode == 13) TB.ClearBoard()" aria-label="Clear Board"><span aria-hidden="true">&#10006;</span></button>
+			<button id="PullPeg" tabindex="0" onclick="TB.ClearPeg()" onkeyup="if(event.keyCode == 13) TB.PullPeg()" aria-label="Clear Circle"></button>
+			<input type='text' class='color' value='red' />
 		</div>
-
 	</div>
+
+	<div id="BoardArea"></div>
+
+	
+
+
+		<div data-modal id="Settings_Modal" class="a11y-modal bx--modal" tabindex="-1">
+			<div class="bx--modal-container">
+				<div class="bx--modal-header">
+					<p class="bx--modal-header__label bx--type-delta">Settings for the grid layout</p>
+					<p class="bx--modal-header__heading bx--type-beta">Grid Options</p>
+					<button class="bx--modal-close" type="button" data-modal-close aria-label="close modal">
+						<svg class="bx--modal-close__icon" width="10" height="10" viewBox="0 0 10 10" fill-rule="evenodd">
+							<title>Close Modal</title>
+							<path d="M9.8 8.6L8.4 10 5 6.4 1.4 10 0 8.6 3.6 5 .1 1.4 1.5 0 5 3.6 8.6 0 10 1.4 6.4 5z"></path>
+						</svg>
+					</button>
+				</div>
+				<div class="bx--modal-content">
+					<div class="bx--form-item">
+						<label for="DSize" class="bx--label">Dot Size</label>
+						<input id="DSize" type="range" min="10" max="30" step="5" value="0" />
+					</div>
+					
+					<div class="bx--form-item">
+						<label for="DBright" class="bx--label">Dot Brightness</label>
+						<input id="DBright" type="range" min="0" max="1" step=".1" value="0" />
+					</div>
+					
+					<div class="bx--form-item">
+						<label for="GridStyle" class="bx--label">Grid Style</label>
+						<div class="bx--select">
+							<select id="GridStyle" class="bx--select-input" onchange="TB.changeGrid()">
+								<option value="Modern" class="bx--select-option">Modern</option>
+								<option value="Retro" class="bx--select-option">Retro</option>>
+							</select>
+							<svg class="bx--select__arrow" width="10" height="5" viewBox="0 0 10 5" fill-rule="evenodd">
+								<path d="M10 0L5 5 0 0z"></path>
+							</svg>
+						</div>
+					</div>
+				</div>
+				<div class="bx--modal-footer">
+					<button class="bx--btn bx--btn--primary" type="button" data-modal-close>OK</button>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div data-modal id="Help_Modal" class="a11y-modal bx--modal" tabindex="-1">
+			<div class="bx--modal-container">
+				<div class="bx--modal-header">
+					<p class="bx--modal-header__label bx--type-delta">Keyboard</p>
+					<p class="bx--modal-header__heading bx--type-beta">Help</p>
+					<button class="bx--modal-close" type="button" data-modal-close aria-label="close modal">
+						<svg class="bx--modal-close__icon" width="10" height="10" viewBox="0 0 10 10" fill-rule="evenodd">
+							<title>Close Modal</title>
+							<path d="M9.8 8.6L8.4 10 5 6.4 1.4 10 0 8.6 3.6 5 .1 1.4 1.5 0 5 3.6 8.6 0 10 1.4 6.4 5z"></path>
+						</svg>
+					</button>
+				</div>
+				<div class="bx--modal-content">
+					<p>Keyboard shortcuts</p>
+				</div>
+				<div class="bx--modal-footer">
+					<button class="bx--btn bx--btn--secondary" type="button" data-modal-close>Cancel</button>
+					<button class="bx--btn bx--btn--primary" type="button" data-modal-primary-focus>Save</button>
+				</div>
+			</div>
+		</div>
+	
+
+
 	<div id="CurrentMode" aria-live="polite" tabindex="-1"></div>
 
+	<script type="text/javascript" src="js/Modernizr-2.8.3.min.js"></script>
+	<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+	<script type="text/javascript" src="js/d3.v3.min.js"></script>
+	<script type="text/javascript" src="js/inclusive-menu-button-0.1.2.min.js"></script>
+	<script type="text/javascript" src="js/spectrum-1.8.0.js"></script>
+	<script type="text/javascript" src="js/ntc.js"></script>
+	<script type="text/javascript" src="js/carbon-components.min.js"></script>
+	<script type="text/javascript" src="js/touchbright.js"></script>
 	<script>
-		$(function () {
-			TB.Init();
-		});
+		$(function () { TB.Init(); });
 	</script>
 </body>
 </html>
