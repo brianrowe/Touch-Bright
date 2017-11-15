@@ -51,7 +51,14 @@ button{
 	width: 100%;
 	height: 50px;
 	margin-bottom: 10px;
+	background-color: #ffffff;
 }
+
+body.inverted #Menubar {
+	background-color: #000000;
+}
+
+
 
 #Menubar .right {
 	float: right;
@@ -70,10 +77,15 @@ button{
 	width: 28px;
 	height: 28px;
 	border-radius: 30px;
-	border: solid #ccc 1px;
+	border: solid black 1px;
 	float: right;
-	margin: 1em 1em 1em 0;
-	background: #000;
+	margin: .7em 1em 1em 0;
+	background: white;
+}
+
+body.inverted #PullPeg {
+	background: black;
+	border: solid white 1px;
 }
 
 #PullPeg:hover {
@@ -95,7 +107,11 @@ button{
 	height: 30px;
 	text-align: center;
 	float: right;
-	margin: 1em 1em 1em 0;
+	margin: .7em 1em 1em 0;
+}
+
+.sp-replacer{
+	padding-top: .7em;
 }
 
 #ClearBoard:hover {
@@ -143,7 +159,7 @@ button{
 [data-inclusive-menu] {
   position: relative;
 	display: inline-block;
-	margin-top: .7em;
+	margin-top: .4em;
 	margin-left: .7em;
 	font-size: 1.3em;
 }
