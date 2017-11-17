@@ -30,6 +30,8 @@ var TB = {
 		isInverted = false,
 		CurrentMode = 'draw',
 		GridStyle = 'Modern';
+		focusableElementsString = "a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]";
+		focusedElementBeforeModal = "";
 
 		if (localStorage.getItem('TB_Settings')) {
 			RawSettings = localStorage.getItem('TB_Settings');
@@ -475,6 +477,72 @@ var TB = {
 		TB.showGrid();
 		window.open("data:image/svg+xml;base64," + btoa(savesvg));
 	},
+
+	trapKey :function (obj) {
+		
+		var tabbable = $(obj).find('select, input, textarea, button, a').filter(':visible');
+		console.log("TrapKey " + tabbable );
+		
+		var firstTabbable = tabbable.first();
+		var lastTabbable = tabbable.last();					
+		
+		firstTabbable.focus();
+		lastTabbable.on('keydown', function (e) {
+			if ((e.which === 9 && !e.shiftKey)) {
+				e.preventDefault();
+				firstTabbable.focus();
+			}
+		});
+		firstTabbable.on('keydown', function (e) {
+			if ((e.which === 9 && e.shiftKey)) {
+				e.preventDefault();
+				lastTabbable.focus();
+			}
+		});
+		
+
+			if (e.keyCode === 27) {
+				var o = $(obj).find('*');
+				var cancelElement;
+				cancelElement = o.filter("#modalCloseButton")
+				cancelElement.click();
+				evt.preventDefault();	
+			};
+	
+	},
+
+	setFocusToFirstItemInModal: function (obj){
+		//var o = obj.find('*');
+		//o.filter(focusableElementsString).filter(':visible').first().focus();
+	},
+
+	showModal: function (obj) {
+
+		$('#mainPage').attr('aria-hidden', 'true'); 
+		$(obj).show();
+		$(obj).attr('aria-hidden', 'false'); 
+		$('.modal-close').focus();
+		//$('.modal-container').focus();
+		TB.trapKey(obj);
+		
+
+			//$('#SettingsModal').off('focusin','#SettingsModal',function() {
+			//	alert('body focus');
+			//	TB.setFocusToFirstItemInModal(obj);
+			//})
+			//focusedElementBeforeModal = $(':focus');
+			//TB.setFocusToFirstItemInModal(obj);
+	
+	},
+
+	hideModal: function (obj) {
+		$(obj).closest('.modal').css('display', 'none');
+		$(obj).closest('.modal').attr('aria-hidden', 'true');
+		$('#mainPage').attr('aria-hidden', 'false');
+		$('body').off('focusin','#mainPage');
+		focusedElementBeforeModal.focus();
+	},
+
 
 	KeyPressControl: function (keyCode) {
 		console.log("Key: " + keyCode)
