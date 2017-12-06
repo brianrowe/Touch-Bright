@@ -84,62 +84,35 @@
 		<div id="BoardArea"></div>
 	</div>
 
-<!-- 	<div id="SettingsModal" class="modal" aria-hidden="true" aria-labelledby="modalTitle" aria-describedby="modalDescription" role="dialog">
-			<div role="document" class="ModalContainer">
-					<div id="modalDescription" class="screen-reader-offscreen">Grid Settings Description</div>
-					<div class="modal-header">
-							<h1 id="modalTitle">Grid Settings</h1>
-							<p>How to setup the grid</p>
-							<button id="modalCloseButton" class="modalCloseButton" title="Close registration form" onclick="TB.hideModal(this)">
-									<svg class="odal-close__icon" width="10" height="10" viewBox="0 0 10 10" fill-rule="evenodd">
-											<title>Close Modal</title>
-											<path d="M9.8 8.6L8.4 10 5 6.4 1.4 10 0 8.6 3.6 5 .1 1.4 1.5 0 5 3.6 8.6 0 10 1.4 6.4 5z"></path>
-									</svg>
-							</button>
-					</div>
-					<div class="modal-content">
-						<label for="DSize">Dot Size</label>
-						<input id="DSize" type="range" min="10" max="30" step="5" value="0" tabindex="0"/>
-						<label for="DBright" >Dot Brightness</label>
-						<input id="DBright" type="range" min="0" max="1" step=".1" value="0" tabindex="0"/>
-						<label for="GridStyle" >Grid Style</label>
-						<div >
-							<select id="GridStyle" onchange="TB.changeGrid()">
-								<option value="Modern">Modern</option>
-								<option value="Retro">Retro</option>>
-							</select>
-					</div>
-					<div class="modal-footer">
-							<input type="button" name="button" id="enter" value="Submit">
-							<input type="button" name="cancelButton" id="cancelButton" value="Cancel">
-					</div>
-			</div>
-	</div> -->
 
-
-	<div id="SettingsModal" class="modal" aria-hidden="true" tabindex="0">
-		<div class="modal-container">
+	<div id="SettingsModal" class="modal" aria-hidden="true" tabindex="0" style="display:none;" aria-labelledby="modalTitle" role="dialog">
+		<div class="modal-container" role="document">
 			<div class="modal-header">
-				<p class="modal-header__label">Optional label</p>
-				<p class="modal-header__heading">Modal heading</p>
-				<button class="modal-close" type="button" aria-label="close modal">
+				<p class="modal-header__heading" id="modalTitle">Grid Settings</p>
+			</div>
+			<div class="modal-content">
+				
+				<P><label for="DSize">Hole Size</label> <input id="DSize" type="range" min="10" max="30" step="5" value="0" /></P>
+				<p><label for="DBright">Hole Brightness</label> <input id="DBright" type="range" min="0" max="1" step=".1" value="0" /></p>
+				<fieldset>
+					<legend>Grid Style</legend>
+					<input id="gridChoice1" name="gridstyle" type="radio" value="Even"/>
+					<label for="gridChoice1">Even</label>
+					<input id="gridChoice2" name="gridstyle" type="radio" value="Offset"/>
+					<label for="gridChoice2">Offset</label>
+				</fieldset>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn--secondary" type="button">Cancel</button>
+				<button class="btn btn--primary" type="button">Ok</button>
+				<button class="modal-close" type="button" aria-label="close modal" onclick="TB.hideModal($(this))">
 					<svg class="modal-close__icon" width="10" height="10" viewBox="0 0 10 10" fill-rule="evenodd">
 						<title>Close Modal</title>
 						<path d="M9.8 8.6L8.4 10 5 6.4 1.4 10 0 8.6 3.6 5 .1 1.4 1.5 0 5 3.6 8.6 0 10 1.4 6.4 5z"></path>
 					</svg>
 				</button>
 			</div>
-			<div class="modal-content">
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id accumsan augue. Phasellus consequat augue vitae
-					tellus tincidunt posuere. Curabitur justo urna, consectetur vel elit iaculis, ultrices condimentum risus. Nulla facilisi.
-					Etiam venenatis molestie tellus. Quisque consectetur non risus eu rutrum. </p>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn--secondary" type="button">Secondary button</button>
-				<button class="btn btn--primary" type="button">Primary button</button>
-			</div>
 		</div>
-	</div>
 
 
 	<div id="CurrentMode" aria-live="polite" tabindex="-1"></div>
