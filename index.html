@@ -59,13 +59,15 @@
 		<div id="menubar">
 			<div class="left">
 				<div data-inclusive-menu>
-					<button data-inclusive-menu-opens="nav">Menu<span aria-hidden="true">&#x25be;</span></button>
+					<button data-inclusive-menu-opens="nav">Menu
+						<span aria-hidden="true">&#x25be;</span>
+					</button>
 					<div id="nav" data-inclusive-menu-from="left">
 						<button>Toggle Grid</button>
 						<button type="button" onclick="TB.showModal('#SettingsModal')">Grid Options</button>
 						<button>Invert Screen</button>
 						<button type="button" data-modal-target="#Help_Modal">Touch-Bright Help</button>
-						<!-- 
+						<!--
 						<button>Save Picture</button>
 						<button>Open Picture</button>
 						<button>Print Picture</button>
@@ -75,8 +77,10 @@
 				</div>
 			</div>
 			<div class="right">
-				<button id="ClearBoard" onclick="TB.ClearBoard()" onkeyup="if(event.keyCode == 13) TB.ClearBoard()" aria-label="Clear Board"><span aria-hidden="true">&#10006;</span></button>
-				<button id="PullPeg" onclick="TB.ClearPeg()" onkeyup="if(event.keyCode == 13) TB.PullPeg()" aria-label="Clear Circle"></button>
+				<button id="ClearBoard" aria-label="Clear Board">
+					<span aria-hidden="true">&#10006;</span>
+				</button>
+				<button id="PullPeg" aria-label="Clear Circle"></button>
 				<input type='text' class='color' value='red' />
 			</div>
 		</div>
@@ -84,48 +88,55 @@
 		<div id="BoardArea"></div>
 	</div>
 
-
-	<div id="SettingsModal" class="modal" aria-hidden="true" tabindex="0" style="display:none;" aria-labelledby="modalTitle" role="dialog">
+	<div id="SettingsModal" class="modal" aria-hidden="true" tabindex="0" style="display:none;" aria-labelledby="modalTitle"
+	 role="dialog">
 		<div class="modal-container" role="document">
 			<div class="modal-header">
 				<p class="modal-header__heading" id="modalTitle">Grid Settings</p>
-			</div>
-			<div class="modal-content">
-				
-				<P><label for="DSize">Hole Size</label> <input id="DSize" type="range" min="10" max="30" step="5" value="0" /></P>
-				<p><label for="DBright">Hole Brightness</label> <input id="DBright" type="range" min="0" max="1" step=".1" value="0" /></p>
-				<fieldset>
-					<legend>Grid Style</legend>
-					<input id="gridChoice1" name="gridstyle" type="radio" value="Even"/>
-					<label for="gridChoice1">Even</label>
-					<input id="gridChoice2" name="gridstyle" type="radio" value="Offset"/>
-					<label for="gridChoice2">Offset</label>
-				</fieldset>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn--secondary" type="button">Cancel</button>
-				<button class="btn btn--primary" type="button">Ok</button>
-				<button class="modal-close" type="button" aria-label="close modal" onclick="TB.hideModal($(this))">
+				<button class="modal-close js-close-modal" type="button" aria-label="close modal" onclick="TB.hideModal($(this))">
 					<svg class="modal-close__icon" width="10" height="10" viewBox="0 0 10 10" fill-rule="evenodd">
 						<title>Close Modal</title>
 						<path d="M9.8 8.6L8.4 10 5 6.4 1.4 10 0 8.6 3.6 5 .1 1.4 1.5 0 5 3.6 8.6 0 10 1.4 6.4 5z"></path>
 					</svg>
 				</button>
 			</div>
+			<div class="modal-content">
+				<P>
+					<label for="DSize">Hole Size</label>
+					<input id="DSize" type="range" min="10" max="30" step="5" value="0" />
+				</P>
+				<p>
+					<label for="DBright">Hole Brightness</label>
+					<input id="DBright" type="range" min="0" max="1" step=".1" value="0" />
+				</p>
+				<fieldset>
+					<legend>Grid Style</legend>
+					<input id="gridChoice1" name="gridstyle" type="radio" value="Even" />
+					<label for="gridChoice1">Even</label>
+					<input id="gridChoice2" name="gridstyle" type="radio" value="Offset" />
+					<label for="gridChoice2">Offset</label>
+				</fieldset>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn--secondary" type="button">Cancel</button>
+				<button class="btn btn--primary" type="button">Ok</button>
+			</div>
 		</div>
 
+		<div id="CurrentMode" aria-live="polite" tabindex="-1"></div>
 
-	<div id="CurrentMode" aria-live="polite" tabindex="-1"></div>
+		<script type="text/javascript" src="js/Modernizr-2.8.3.min.js"></script>
+		<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+		<script type="text/javascript" src="js/annyang.js"></script>
+		<script type="text/javascript" src="js/d3.v3.min.js"></script>
+		<script type="text/javascript" src="js/inclusive-menu-button-0.1.2.min.js"></script>
+		<script type="text/javascript" src="js/spectrum-1.8.0.js"></script>
+		<script type="text/javascript" src="js/ntc.js"></script>
+		<script type="text/javascript" src="js/touchbright.js"></script>
+		<script>
+			TB.initialize();
+		</script>
 
-	<script type="text/javascript" src="js/Modernizr-2.8.3.min.js"></script>
-	<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
-	<script type="text/javascript" src="js/d3.v3.min.js"></script>
-	<script type="text/javascript" src="js/inclusive-menu-button-0.1.2.min.js"></script>
-	<script type="text/javascript" src="js/spectrum-1.8.0.js"></script>
-	<script type="text/javascript" src="js/ntc.js"></script>
-	<script type="text/javascript" src="js/touchbright.js"></script>
-	<script>
-		$(function () { TB.Init(); });
-	</script>
 </body>
+
 </html>
