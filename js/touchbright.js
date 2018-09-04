@@ -1,14 +1,9 @@
 'use strict';
 var TB = (function () {
-  var ScreenWidth = window.screen.availWidth,
-    ScreenHeight = window.screen.availHeight,
-    w = window,
-    d = document,
-    e = d.documentElement,
-    g = d.getElementsByTagName('body')[0],
-    x = w.innerWidth || e.clientWidth || g.clientWidth,
-    y = w.innerHeight || e.clientHeight || g.clientHeight,
-    p = document.getElementById('page'),
+  var e = document.documentElement,
+    g = document.getElementsByTagName('body')[0],
+    x = window.innerWidth || e.clientWidth || g.clientWidth,
+    y = window.innerHeight || e.clientHeight || g.clientHeight,
     dotsize = 20,
     PegStroke = '#ffffff',
     PegBrightness = 0.5,
@@ -20,7 +15,8 @@ var TB = (function () {
     svgwidth = columns * dotspace,
     svgheight = (Math.floor(y / dotspace)) * dotspace - 60,
     rows = Math.floor(svgheight / dotspace),
-    TouchBright = d3.select("#BoardArea").append("svg").attr({ "id": "TouchBright", "tabindex": "0", "aria-label": "Rows " + rows + " Columns " + columns }),
+    TouchBright = document.getElementById('TouchBright'),
+    Pegs = document.getElementsByClassName("peg"),
     CurrentColor = '#0000FF',
     ClearPeg = false,
     initRun = false,
@@ -37,20 +33,24 @@ var TB = (function () {
 
   function initialize() {
     localBrowserStorage();
-    colorSelector();
+    //colorSelector();
 
-    $('#DBright').on("change", changeBrightness);
-    $('#DSize').on("change", changeSize);
-    $('#DSize').val(dotsize);
-    $('#DBright').val(PegBrightness);
-    $('#GridStyle').val(GridStyle);
-    $('#ClearBoard').on("click", clearBoard);
-    $('#PullPeg').on("click", clearPeg);
-    $("#TouchBright").on("keydown", function (e) {
+    document.getElementById('DBright').addEventListener("change", changeBrightness);
+    document.getElementById('DSize').addEventListener("change", changeSize);
+
+    document.getElementById('PullPeg').addEventListener("click", clearPeg);
+    document.getElementById('ClearBoard').addEventListener("click", clearBoard);
+
+    TouchBright.onkeydown = function(e){
       keyPressControl(e.keyCode);
-    });
+    };
+    
 
-    $(window).on("resize", function (e) {
+    //$('#DSize').val(dotsize);
+    //$('#DBright').val(PegBrightness);
+    //$('#GridStyle').val(GridStyle);
+    
+    window.onresize = function(){
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
         if (initRun === true) {
@@ -62,7 +62,7 @@ var TB = (function () {
           initRun = true;
         }
       }, 250);
-    }).resize();
+    };
 
     document.body.addEventListener("touchmove", function (e) {
       e.preventDefault();
@@ -70,38 +70,38 @@ var TB = (function () {
 
     AppMenuButton.on('choose', function (choice) {
       switch (choice.textContent) {
-      case "Toggle Grid":
-        toggleGrid();
-        break;
-      case "Grid Options":
-        //ShowOptions('settings_modal');
-        break;
-      case "Invert Screen":
-        invert();
-        break;
-      default:
-        return;
+        case "Toggle Grid":
+          toggleGrid();
+          break;
+        case "Grid Options":
+          //ShowOptions('settings_modal');
+          break;
+        case "Invert Screen":
+          invert();
+          break;
+        default:
+          return;
       }
     });
-
-    voiceControl();
+    window.dispatchEvent(new Event('resize'));
+    //voiceControl();
   }
 
   function localBrowserStorage() {
     if (localStorage.getItem('TB_Settings')) {
       var RawSettings = localStorage.getItem('TB_Settings'),
         Settings = JSON.parse(RawSettings);
-        dotsize = parseInt(Settings.dotsize);
-        dotspace = dotsize * 1.5;
-        PegBrightness = Settings.brightness;
-        GridStyle = Settings.gridstyle;
+      dotsize = parseInt(Settings.dotsize);
+      dotspace = dotsize * 1.5;
+      PegBrightness = Settings.brightness;
+      GridStyle = Settings.gridstyle;
     } else {
       TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
       localStorage.setItem('TB_Settings', JSON.stringify(TB_Settings));
     }
   }
 
-  function colorSelector() {
+  /* function colorSelector() {
     $(".color").spectrum({
       allowEmpty: false,
       color: CurrentColor,
@@ -131,10 +131,10 @@ var TB = (function () {
         ["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)", "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)", "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)", "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)", "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)", "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)", "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)", "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)", "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
       ]
     });
-  }
+  } */
 
   function changeSize() {
-    dotsize = $("#DSize").val();
+    dotsize = document.getElementById("DSize").value;
     dotspace = dotsize * 1.5;
     columns = Math.floor();
     columnpad = x / dotspace % 1 * 10;
@@ -149,28 +149,28 @@ var TB = (function () {
   }
 
   function changeGrid() {
-    GridStyle = $("#GridStyle").val();
+    GridStyle = document.getElementById("GridStyle").value;
     updateWindow();
     TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
     localStorage.setItem("TB_Settings", JSON.stringify(TB_Settings));
   }
 
   function changeBrightness() {
-    PegBrightness = $("#DBright").val();
+    PegBrightness = document.getElementById("DBright").value;
     setBrightness();
     TB_Settings = { "type": "Settings", "dotsize": dotsize, "brightness": PegBrightness, "gridstyle": GridStyle };
     localStorage.setItem("TB_Settings", JSON.stringify(TB_Settings));
   }
 
   function setBrightness() {
-    d3.selectAll("rect").each(function(d, i) {
-      d3.select(this).attr("stroke-opacity", PegBrightness);
-    });
+    for(let i = 0; i < Pegs.length; i++) {
+      Pegs[i].setAttribute("stroke-opacity", PegBrightness);
+    }
   }
 
   function updateWindow() {
-    x = w.innerWidth || e.clientWidth || g.clientWidth;
-    y = w.innerHeight || e.clientHeight || g.clientHeight;
+    x = window.innerWidth || e.clientWidth || g.clientWidth;
+    y = window.innerHeight || e.clientHeight || g.clientHeight;
     columns = Math.floor(x / dotspace);
     columnpad = Math.round(x / dotspace % 1 * 10);
     rows = Math.floor(y / dotspace);
@@ -178,7 +178,12 @@ var TB = (function () {
     svgwidth = columns * dotspace;
     svgheight = rows * dotspace - 50;
     rows = Math.floor(svgheight / dotspace);
-    TouchBright.attr({ "width": svgwidth, "height": svgheight, "aria-label": "Rows " + rows + " Columns " + columns });
+    setAttributes(TouchBright, {
+      "width": svgwidth,
+      "height": svgheight,
+      "aria-label": "Rows " + rows + " Columns " + columns
+    });
+
     drawLightBoard();
     setBrightness();
   }
@@ -187,85 +192,69 @@ var TB = (function () {
     return n % 2 == 0;
   }
 
+  function setAttributes(el, attrs) {
+    for(var key in attrs) {
+      el.setAttribute(key, attrs[key]);
+    }
+  }
+
+  function removePegs(){
+    while (TouchBright.firstChild) {
+      TouchBright.firstChild.remove();
+    }
+  }
+
   function drawLightBoard() {
-    TouchBright.selectAll("*").remove();
-    for (var ri = 0; ri < rows; ri++) {
-      for (var ci = 0; ci < columns; ci++) {
+    removePegs();
+    var ri, ci;
+    for (ri = 0; ri < rows; ri++) {
+      for (ci = 0; ci < columns; ci++) {
         if (GridStyle == "Retro") {
           if (isEven((ri + 1))) {
-            var peg = TouchBright.append("rect").attr({
-              "id": (ri + 1) + "-" + (ci + 1),
-              "class": "circle",
-              "x": ci * dotspace + columnpad,
-              "y": ri * dotspace + rowpad,
-              "width": dotsize,
-              "height": dotsize,
-              "rx": dotsize,
-              "ry": dotsize,
-              "fill": "#000",
-              "fill-opacity": "0",
-              "stroke": PegStroke,
-              "stroke-miterlimit": 10,
-              "stroke-width": StrokeWidth,
-              "focusable": "true",
-              "tabindex": "0",
-              "aria-label": "Row " + (ri + 1) + " Column " + (ci + 1) + " Not Colored"
-            })
+            drawPeg(ri, ci, dotspace, rowpad, PegStroke, StrokeWidth, 0)
           } else {
             if (ci < (columns - 1)) {
-              var peg = TouchBright.append("rect").attr({
-                "id": (ri + 1) + "-" + (ci + 1),
-                "class": "circle",
-                "x": ci * dotspace + columnpad + (dotsize * 0.8),
-                "y": ri * dotspace + rowpad,
-                "width": dotsize,
-                "height": dotsize,
-                "rx": dotsize,
-                "ry": dotsize,
-                "fill": "#000",
-                "fill-opacity": "0",
-                "stroke": PegStroke,
-                "stroke-miterlimit": 10,
-                "stroke-width": StrokeWidth,
-                "focusable": "true",
-                "tabindex": "0",
-                "aria-label": "Row " + (ri + 1) + " Column " + (ci + 1) + " Not Colored"
-              })
+              drawPeg(ri, ci, dotspace, rowpad, PegStroke, StrokeWidth, 0.8)
             }
           }
         } else {
-          var peg = TouchBright.append("rect").attr({
-            "id": (ri + 1) + "-" + (ci + 1),
-            "class": "circle",
-            "x": ci * dotspace + columnpad,
-            "y": ri * dotspace + rowpad,
-            "width": dotsize,
-            "height": dotsize,
-            "rx": dotsize,
-            "ry": dotsize,
-            "fill": "#000",
-            "fill-opacity": "0",
-            "stroke": PegStroke,
-            "stroke-miterlimit": 10,
-            "stroke-width": StrokeWidth,
-            "focusable": "true",
-            "tabindex": "0",
-            "aria-label": "Row " + (ri + 1) + " Column " + (ci + 1) + " Not Colored"
-          })
+          drawPeg(ri, ci, dotspace, rowpad, PegStroke, StrokeWidth, 0)
         }
       }
     }
     boardListener();
   }
 
-  function fillPeg(e) {
+  function drawPeg(ri, ci, dotspace, rowpad, PegStroke, StrokeWidth, offset) {
+    var newPeg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    setAttributes(newPeg, {
+      "id": (ri + 1) + "-" + (ci + 1),
+      "class": "peg",
+      "x": ci * dotspace + columnpad + (dotsize * offset),
+      "y": ri * dotspace + rowpad,
+      "width": dotsize,
+      "height": dotsize,
+      "rx": dotsize,
+      "ry": dotsize,
+      "fill": "#000",
+      "fill-opacity": "0",
+      "stroke": PegStroke,
+      "stroke-miterlimit": 10,
+      "stroke-width": StrokeWidth,
+      "focusable": "true",
+      "tabindex": "0",
+      "aria-label": "Row " + (ri + 1) + " Column " + (ci + 1) + " Not Colored"
+    });
+    TouchBright.appendChild(newPeg);
+  }
+
+  function fillPeg(peg) {
     var ReadableColor = ntc.name(CurrentColor),
-      CurrentId = e.id,
+      CurrentId = peg.id,
       currentRow = parseInt(CurrentId.split("-")[0]),
-      currentColumn = parseInt(CurrentId.split("-")[1]),
-      peg = d3.select(e);
+      currentColumn = parseInt(CurrentId.split("-")[1]);
     if (ClearPeg === true) {
-      peg.attr({
+      setAttributes(peg, {
         "fill": "#000",
         "stroke": PegStroke,
         "stroke-width": StrokeWidth,
@@ -273,7 +262,7 @@ var TB = (function () {
         "aria-label": "Row " + (currentRow) + " Column " + (currentColumn) + " Not Colored"
       });
     } else {
-      peg.attr({
+      setAttributes(peg, {
         "fill": CurrentColor,
         "stroke": PegStroke,
         "stroke-width": "0",
@@ -284,90 +273,63 @@ var TB = (function () {
   }
 
   function boardListener() {
-    var Pegs = d3.selectAll("rect");
-    Pegs.on("mouseover", function (e) {
-      Pegs.attr({
-        "class": "circle"
-      });
-      d3.select(this).attr({
-        "class": "circle selected"
-      });
-    }).on("mouseout", function (e) {
-      var peg = d3.select(this);
-      if (peg.attr("fill-opacity") != "0") {
-        peg.attr({
-          "stroke": PegStroke,
-          "stroke-width": "0"
-        });
-      }
-    }).on("click", function (e) {
-      fillPeg(this);
-    });
+    for(let i = 0; i < Pegs.length; i++) {
+      Pegs[i].addEventListener("mouseover", function(e) {
+        for(let p = 0; p < Pegs.length; p++) {
+          Pegs[p].setAttribute("class", "peg");
+        }
+        e.target.classList.toggle("selected");
+      })
+
+      Pegs[i].addEventListener("click", function(e) {
+        fillPeg(e.target);
+      })
+    }
   }
 
   function invert() {
-    var Pegs = d3.selectAll("rect");
     if (isInverted === false) {
       PegStroke = "#000000";
-      Pegs.each(function () {
-        var peg = d3.select(this);
-        if (peg.attr("fill-opacity") === "0") {
-          peg.attr({
-            "stroke": PegStroke,
-            "stroke-width": StrokeWidth,
-            "stroke-opacity": PegBrightness
-          })
+      for(let i = 0; i < Pegs.length; i++) {
+        var peg = Pegs[i];
+        if (peg.getAttribute('fill-opacity') === "0") {
+          setAttributes(peg, {"stroke": PegStroke, "stroke-width": StrokeWidth, "stroke-opacity": PegBrightness});
         } else {
-          peg.attr({
-            "stroke": PegStroke,
-            "stroke-width": "0",
-            "stroke-opacity": PegBrightness
-          })
+          setAttributes(peg, {"stroke": PegStroke, "stroke-width": "0", "stroke-opacity": PegBrightness});
         }
         isInverted = true;
-      });
+      };
     } else {
       PegStroke = "#ffffff";
-      Pegs.each(function () {
-        var peg = d3.select(this);
-        if (peg.attr("fill-opacity") === "0") {
-          peg.attr({
-            "stroke": PegStroke,
-            "stroke-width": StrokeWidth,
-            "stroke-opacity": PegBrightness
-          })
+      for(let i = 0; i < Pegs.length; i++) {
+        var peg = Pegs[i];
+        if (peg.getAttribute('fill-opacity') === "0") {
+          setAttributes(peg, {"stroke": PegStroke, "stroke-width": StrokeWidth, "stroke-opacity": PegBrightness});
         } else {
-          peg.attr({
-            "stroke": PegStroke,
-            "stroke-width": "0",
-            "stroke-opacity": PegBrightness
-          })
+          setAttributes(peg, {"stroke": PegStroke, "stroke-width": "0", "stroke-opacity": PegBrightness});
         }
         isInverted = false;
-      });
+      };
     }
-    $("body").toggleClass("inverted");
+    document.body.classList.toggle("inverted");
   }
 
   function showGrid() {
     showgrid = true;
-    d3.selectAll("rect").each(function (d, i) {
-      var elt = d3.select(this);
-      if (elt.attr("fill-opacity") === "0") {
-        elt.attr("stroke", PegStroke);
-        elt.attr("stroke-width", StrokeWidth);
-        elt.attr("stroke-opacity", PegBrightness);
+    for(let i = 0; i < Pegs.length; i++) {
+      var peg = Pegs[i];
+      if (peg.getAttribute('fill-opacity') === "0") {
+        setAttributes(peg, {"stroke": PegStroke, "stroke-width": StrokeWidth, "stroke-opacity": PegBrightness});
       }
-    });
+    };
   }
 
   function hideGrid() {
     showgrid = false;
-    d3.selectAll("rect").each(function (d, i) {
-      var elt = d3.select(this);
-      elt.attr("stroke", "none");
-      elt.attr("stroke-width", StrokeWidth);
-    });
+    for(let i = 0; i < Pegs.length; i++) {
+      var peg = Pegs[i];
+      setAttributes(peg, {"stroke": "none", "stroke-width": StrokeWidth});
+    };
   }
 
   function toggleGrid() {
@@ -381,10 +343,9 @@ var TB = (function () {
   function Save() {
     var FileName = prompt("Enter the name of your drawing.", "");
     if (FileName != null) {
-      var savesvg = d3.select("svg").attr({
+      var savesvg = $("svg").attr({
         "title": "My-TouchBright"
-      })
-        .node().parentNode.innerHTML;
+      }).node().parentNode.innerHTML;
       var SaveKey = "TB_" + Math.floor(Date.now() / 1000);
       var SaveObject = { "type": "Drawing", "Name": '"' + FileName + '"', "data": "'" + savesvg + "'" };
       localStorage.setItem(SaveKey, JSON.stringify(SaveObject));
@@ -420,7 +381,7 @@ var TB = (function () {
   function clearBoard() {
     if (confirm("Are you sure you want to clear your drawing?")) {
       updateWindow();
-      $("#1-1").attr("class", "circle selected").focus();
+      $("#1-1").attr("class", "peg selected").focus();
     }
   }
 
@@ -438,16 +399,15 @@ var TB = (function () {
   function print() {
     closeMenu();
     hideGrid();
-    var savesvg = d3.select("svg")
+    var save_svg = $("svg")
       .attr({
         "title": "My-TouchBright",
         "version": 1.1,
         "xmlns": "http://www.w3.org/2000/svg",
         "style": "background:#000000"
-      })
-      .node().parentNode.innerHTML;
+      }).node().parentNode.innerHTML;
     showGrid();
-    window.open("data:image/svg+xml;base64," + btoa(savesvg));
+    window.open("data:image/svg+xml;base64," + btoa(save_svg));
   }
 
   function modalTrapKey(obj) {
@@ -476,7 +436,7 @@ var TB = (function () {
   }
 
   function showModal(obj) {
-    focusedElementBeforeModal = $(':focus');
+    focusedElementBeforeModal = document.activeElement;
     $('#mainPage').attr('aria-hidden', 'true');
     $(obj).show("fast", function () {
       $(obj).find('*').filter(focusableElementsString).filter(':visible').first().focus();
@@ -495,54 +455,50 @@ var TB = (function () {
 
   function keyPressControl(keyCode) {
     console.log("Key: " + keyCode)
-    var isSelected = $('#TouchBright').find('.selected');
-    if (isSelected.length < 1) {
-      $("#1-1").attr("class", "circle selected");
+    var isSelected = TouchBright.querySelector(".selected");
+    if (isSelected == null) {
+      TouchBright.getElementById("1-1").classList.toggle("selected");
     } else {
-      var selectedId = isSelected.attr("id"),
-          currentRow = parseInt(selectedId.split("-")[0]),
-          currentColumn = parseInt(selectedId.split("-")[1]);
+      var selectedId = isSelected.id,
+        currentRow = parseInt(selectedId.split("-")[0]),
+        currentColumn = parseInt(selectedId.split("-")[1]);
       switch (keyCode) {
         case 37: // left
-          isSelected.attr("class", "circle");
+          isSelected.classList.toggle("selected");
           if (currentColumn > 1) {
-            $("#" + currentRow + "-" + (currentColumn - 1)).attr("class", "circle selected").focus();
-          } else {
-            $("#" + currentRow + "-" + columns).attr("class", "circle selected").focus();
+            TouchBright.getElementById(currentRow + "-" + (currentColumn - 1)).classList.toggle("selected").focus();
+              } else {
+            TouchBright.getElementById(currentRow + "-" + columns).classList.toggle("selected").focus();
           }
           break;
         case 38: // up
-          isSelected.attr("class", "circle");
+          isSelected.classList.toggle("selected");
           if (currentRow > 1) {
-            $("#" + (currentRow - 1) + "-" + currentColumn).attr("class", "circle selected").focus();
+            TouchBright.getElementById((currentRow - 1) + "-" + currentColumn).classList.toggle("selected").focus();
           } else {
-            $("#" + rows + "-" + currentColumn).attr("class", "circle selected").focus();
+            TouchBright.getElementById(rows + "-" + currentColumn).classList.toggle("selected").focus();
           }
           break;
         case 39: // right
-          isSelected.attr("class", "circle");
+          isSelected.classList.toggle("selected");
           if (currentColumn < columns) {
-            $("#" + currentRow + "-" + (currentColumn + 1)).attr("class", "circle selected").focus();
+            TouchBright.getElementById(currentRow + "-" + (currentColumn + 1)).classList.toggle("selected").focus();
           } else {
-            $("#" + currentRow + "-" + 1).attr("class", "circle selected").focus();
+            TouchBright.getElementById(currentRow + "-" + 1).classList.toggle("selected").focus();
           }
           break;
         case 40: // down
-          isSelected.attr("class", "circle");
+          isSelected.classList.toggle("selected");
           if (currentRow < rows) {
-            $("#" + (currentRow + 1) + "-" + currentColumn).attr("class", "circle selected").focus();
+            TouchBright.getElementById((currentRow + 1) + "-" + currentColumn).classList.toggle("selected").focus();
           } else {
-            $("#" + 1 + "-" + currentColumn).attr("class", "circle selected").focus();
+            TouchBright.getElementById(1 + "-" + currentColumn).classList.toggle("selected").focus();
           }
           break;
         case 13: // return
-          $("#" + currentRow + "-" + currentColumn).attr("class", "circle selected");
-          isSelected = $('#TouchBright').find('.selected').get(0);
           fillPeg(isSelected);
           break;
-        case 32: // return
-          $("#" + currentRow + "-" + currentColumn).attr("class", "circle selected");
-          isSelected = $('#TouchBright').find('.selected').get(0);
+        case 32: // space bar
           fillPeg(isSelected);
           break;
         case 73: // i
@@ -629,7 +585,7 @@ var TB = (function () {
         showModal('#SettingsModal');
       }
 
-      var SelectColor = function (color){
+      var SelectColor = function (color) {
         console.log('Selected Color: ' + color);
         $(".color").spectrum("set", color);
         CurrentColor = color;
@@ -644,23 +600,23 @@ var TB = (function () {
         '(move) right': moveRight,
         '(move) up': moveUp,
         '(move) down': moveDown,
-        'color' : fillPeg,
-        'fill' : fillPeg,
+        'color': fillPeg,
+        'fill': fillPeg,
         'invert (screen)': invertScreen,
         '(clear) (erase) screen': clearScreen,
         'toggle grid': toggleGrid,
         'show grid': showGrid,
         'hide grid': hideGrid,
         'grid options': showGridOptions,
-        '(select) (choose) color :color' : SelectColor
+        '(select) (choose) color :color': SelectColor
       };
 
       annyang.addCommands(commands);
       annyang.setLanguage('en');
       annyang.addCallback('resultMatch', function (userSaid, commandText, phrases) {
-          console.log('User Said: ' + userSaid);
-          console.log('Command: ' + commandText);
-          console.log('Phrases: ' + phrases);
+        console.log('User Said: ' + userSaid);
+        console.log('Command: ' + commandText);
+        console.log('Phrases: ' + phrases);
       });
       annyang.start({ continuous: false, autoRestart: true });
       speak("Welcome to Touch Bright, lets get started creating awsome designs.");

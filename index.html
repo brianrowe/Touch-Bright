@@ -80,12 +80,14 @@
 				<button id="ClearBoard" aria-label="Clear Board">
 					<span aria-hidden="true">&#10006;</span>
 				</button>
-				<button id="PullPeg" aria-label="Clear Circle"></button>
+				<button id="PullPeg" aria-label="Clear Peg"></button>
 				<input type='text' class='color' value='red' />
 			</div>
 		</div>
 
-		<div id="BoardArea"></div>
+		<div id="BoardArea">
+			<svg id="TouchBright" tabindex=0 xmlns="http://www.w3.org/2000/svg"></svg>
+		</div>
 	</div>
 
 	<div id="SettingsModal" class="modal" aria-hidden="true" tabindex="0" style="display:none;" aria-labelledby="modalTitle"
@@ -102,11 +104,11 @@
 			</div>
 			<div class="modal-content">
 				<P>
-					<label for="DSize">Hole Size</label>
+					<label for="DSize">Peg Size</label>
 					<input id="DSize" type="range" min="10" max="30" step="5" value="0" />
 				</P>
 				<p>
-					<label for="DBright">Hole Brightness</label>
+					<label for="DBright">Peg Brightness</label>
 					<input id="DBright" type="range" min="0" max="1" step=".1" value="0" />
 				</p>
 				<fieldset>
@@ -127,10 +129,9 @@
 
 		<script type="text/javascript" src="js/Modernizr-2.8.3.min.js"></script>
 		<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
-		<script type="text/javascript" src="js/annyang.js"></script>
-		<script type="text/javascript" src="js/d3.v3.min.js"></script>
-		<script type="text/javascript" src="js/inclusive-menu-button-0.1.2.min.js"></script>
 		<script type="text/javascript" src="js/spectrum-1.8.0.js"></script>
+		<script type="text/javascript" src="js/inclusive-menu-button-0.1.2.min.js"></script>
+		<script type="text/javascript" src="js/annyang.js"></script> 
 		<script type="text/javascript" src="js/ntc.js"></script>
 		<script type="text/javascript" src="js/touchbright.js"></script>
 		<script>

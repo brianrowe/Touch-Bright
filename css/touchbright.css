@@ -143,12 +143,12 @@ body.inverted #PullPeg {
 	cursor: pointer;
 }
 
-#TouchBright .circle.selected{
+#TouchBright .peg.selected{
 	stroke-width: 2;
 	stroke-opacity: 1;
 }
 
-#TouchBright .circle:focus{
+#TouchBright .peg:focus{
 	outline: none;
 }
 
@@ -211,7 +211,7 @@ body.inverted #PullPeg {
 
 	@media print {
 
-	#TouchBright .circle{
+	#TouchBright .peg{
 		stroke: none;
 	}
 
